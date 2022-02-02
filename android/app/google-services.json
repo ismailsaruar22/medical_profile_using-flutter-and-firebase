@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "819362576544",
+    "project_id": "medical-profile-v3",
+    "storage_bucket": "medical-profile-v3.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:819362576544:android:cbbb673cb03310431731c5",
+        "android_client_info": {
+          "package_name": "com.example.medical_profile_v3"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "819362576544-dcsu2bnd0733nr11pl3n6nuhmptgadkn.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAZLpRJFrdbpyQGPOrJV6pDH699ekm9ZeU"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "819362576544-dcsu2bnd0733nr11pl3n6nuhmptgadkn.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
