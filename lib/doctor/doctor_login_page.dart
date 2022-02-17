@@ -1,7 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
-import 'package:medical_profile_v3/lab_admin/upload.dart';
+import 'package:medical_profile_v3/prescription/prescription_page.dart';
 import 'package:medical_profile_v3/resources/auth_methods.dart';
 import 'package:medical_profile_v3/screens/feed_screen.dart';
 import 'package:medical_profile_v3/screens/sign_up_screen.dart';
@@ -10,15 +10,16 @@ import 'package:medical_profile_v3/utills/utils.dart';
 import 'package:medical_profile_v3/widgets/textfield_input.dart';
 
 import '../doctor/doctor_login_page.dart';
+import 'doctor_sign_up_screen.dart';
 
-class LoginScreen extends StatefulWidget {
-  const LoginScreen({Key? key}) : super(key: key);
+class DoctorLoginPage extends StatefulWidget {
+  const DoctorLoginPage({Key? key}) : super(key: key);
 
   @override
-  _LoginScreenState createState() => _LoginScreenState();
+  _DoctorLoginPageState createState() => _DoctorLoginPageState();
 }
 
-class _LoginScreenState extends State<LoginScreen> {
+class _DoctorLoginPageState extends State<DoctorLoginPage> {
   final TextEditingController _emailController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
   bool _isLoading = false;
@@ -40,7 +41,7 @@ class _LoginScreenState extends State<LoginScreen> {
     );
     if (res == 'success') {
       Navigator.pushReplacement(
-          context, MaterialPageRoute(builder: (context) => FeedScreen()));
+          context, MaterialPageRoute(builder: (context) => PrescriptionPage()));
     } else {
       showSnackBar(res, context);
     }
@@ -51,29 +52,12 @@ class _LoginScreenState extends State<LoginScreen> {
 
   navigateToSignUp() {
     Navigator.push(
-        context, MaterialPageRoute(builder: (context) => SignUpScreen()));
+        context, MaterialPageRoute(builder: (context) => DoctorSignUpPage()));
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        actions: [
-          ElevatedButton(
-            onPressed: () {
-              Navigator.push(
-                context,
-                MaterialPageRoute(builder: (context) => const UploadPage()),
-              );
-            },
-            child: const Text(
-              'Upload report',
-              style:
-                  TextStyle(fontWeight: FontWeight.bold, color: Colors.black),
-            ),
-          ),
-        ],
-      ),
       body: SafeArea(
         child: Container(
             padding: const EdgeInsets.symmetric(
@@ -150,38 +134,6 @@ class _LoginScreenState extends State<LoginScreen> {
                   child: Container(),
                   flex: 2,
                 ),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    Container(
-                      child: const Text("Are you a doctor?"),
-                      padding: const EdgeInsets.symmetric(
-                        vertical: 8.0,
-                      ),
-                    ),
-                    const SizedBox(
-                      width: 10,
-                    ),
-                    ElevatedButton(
-                        style: ButtonStyle(
-                          padding: MaterialStateProperty.all(
-                              const EdgeInsets.all(5)),
-                          backgroundColor:
-                              MaterialStateProperty.all(Colors.teal),
-                        ),
-                        onPressed: () {
-                          Navigator.push(context,
-                              MaterialPageRoute(builder: (context) {
-                            return const DoctorLoginPage();
-                          }));
-                        },
-                        child: const Text(
-                          'Login as a doctor',
-                          style: TextStyle(color: Colors.black),
-                        )),
-                  ],
-                ),
-
                 Row(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [

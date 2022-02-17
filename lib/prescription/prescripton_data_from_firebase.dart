@@ -1,17 +1,20 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+
 import 'package:flutter/material.dart';
 
 import 'details_page.dart';
 
-class HistoryPage extends StatefulWidget {
-  const HistoryPage({Key? key}) : super(key: key);
+class PrescriptionDataFromFirebse extends StatefulWidget {
+  const PrescriptionDataFromFirebse({Key? key}) : super(key: key);
 
   @override
-  _HistoryPageState createState() => _HistoryPageState();
+  _PrescriptionDataFromFirebseState createState() =>
+      _PrescriptionDataFromFirebseState();
 }
 
-class _HistoryPageState extends State<HistoryPage> {
-  final ref = FirebaseFirestore.instance.collection('appointments');
+class _PrescriptionDataFromFirebseState
+    extends State<PrescriptionDataFromFirebse> {
+  final ref = FirebaseFirestore.instance.collection('notes');
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -31,7 +34,7 @@ class _HistoryPageState extends State<HistoryPage> {
           return Container(
             margin: EdgeInsets.all(20),
             child: ListView(
-              children: snapshot.data!.docs.map((appointments) {
+              children: snapshot.data!.docs.map((notes) {
                 // return Container(
                 //   child: Center(child: Text(notes['content'])),
                 // );
@@ -45,7 +48,7 @@ class _HistoryPageState extends State<HistoryPage> {
                   child: Card(
                     elevation: 30,
                     child: ListTile(
-                      title: Text(appointments.id),
+                      title: Text(notes.id),
                       tileColor: Colors.blue.shade500,
                     ),
                   ),

@@ -1,5 +1,10 @@
+import 'dart:typed_data';
+
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:medical_profile_v3/prescription/prescription_page.dart';
+import 'package:medical_profile_v3/profile_update_screen.dart';
 import 'package:medical_profile_v3/qr/qr_share_page.dart';
 import 'package:medical_profile_v3/screens/login_screen.dart';
 import 'package:medical_profile_v3/utills/search_page.dart';
@@ -28,6 +33,11 @@ class _FeedScreenState extends State<FeedScreen> {
         ],
       );
 
+  TextEditingController prescriptionContent = TextEditingController();
+
+  CollectionReference ref = FirebaseFirestore.instance.collection('notes');
+  Uint8List? _image;
+
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
@@ -55,6 +65,19 @@ class _FeedScreenState extends State<FeedScreen> {
               'Medical Profile',
               style: TextStyle(fontSize: 15),
             ),
+            actions: [
+              ElevatedButton(
+                  style: ButtonStyle(
+                    padding: MaterialStateProperty.all(EdgeInsets.all(5)),
+                  ),
+                  onPressed: () {
+                    Navigator.push(context,
+                        MaterialPageRoute(builder: (context) {
+                      return PrescriptionPage();
+                    }));
+                  },
+                  child: const Text('write prescription'))
+            ],
             bottom: PreferredSize(
               preferredSize: _tabBar.preferredSize,
               child: ColoredBox(
@@ -77,81 +100,80 @@ class _FeedScreenState extends State<FeedScreen> {
                   decoration: const BoxDecoration(color: Colors.white),
                   accountName: Container(
                       child: const Text(
-                    'Elizabeth Olsen',
+                    'Ismail Sarwar',
                     style: TextStyle(color: Colors.black),
                   )),
                   accountEmail: Container(
-                      child: const Text(
-                    'elizabetholsen@gmail.com',
+                      child: Text(
+                    FirebaseAuth.instance.currentUser!.email.toString(),
                     style: TextStyle(color: Colors.black),
                   )),
-                  currentAccountPicture: const CircleAvatar(
-                    backgroundImage: AssetImage('photos/ElizabethOlsen.jpg'),
+                  currentAccountPicture: Stack(
+                    children: [
+                      _image != null
+                          ? CircleAvatar(
+                              radius: 64,
+                              backgroundImage: MemoryImage(_image!),
+                            )
+                          : const CircleAvatar(
+                              radius: 64,
+                              backgroundImage: NetworkImage(
+                                'https://thumbs.dreamstime.com/z/businessman-icon-image-male-avatar-profile-vector-glasses-beard-hairstyle-179728610.jpg',
+                              ),
+                            ),
+                      Positioned(
+                          bottom: -5,
+                          left: 80,
+                          child: IconButton(
+                            icon: const Icon(Icons.add_a_photo),
+                            color: Colors.teal,
+                            onPressed: () {},
+                          ))
+                    ],
                   ),
                 ),
                 const SizedBox(
-                  height: 20,
+                  height: 10,
                 ),
-                ListTile(
-                  leading: IconButton(
-                    icon: const Icon(Icons.dashboard),
-                    onPressed: () {},
-                  ),
-                  title: const Text('Dashboard'),
+                const ListTile(
+                  leading: Icon(Icons.notifications),
+                  title: Text('Notifications'),
                 ),
                 const SizedBox(
                   height: 10,
                 ),
                 ListTile(
-                  leading: IconButton(
-                    icon: const Icon(Icons.notifications),
-                    onPressed: () {},
-                  ),
-                  title: const Text('Notifications'),
-                ),
-                const SizedBox(
-                  height: 10,
-                ),
-                ListTile(
-                  leading: IconButton(
-                    icon: const Icon(Icons.place),
-                    onPressed: () {},
-                  ),
-                  title: const Text('Branch'),
-                ),
-                const SizedBox(
-                  height: 10,
-                ),
-                ListTile(
-                  leading: IconButton(
-                    icon: const Icon(Icons.history),
-                    onPressed: () {
-                      Navigator.push(context,
-                          MaterialPageRoute(builder: (context) {
-                        return HistoryPage();
-                      }));
-                    },
-                  ),
+                  leading: const Icon(Icons.history),
                   title: const Text('History'),
+                  onTap: () {
+                    Navigator.push(context,
+                        MaterialPageRoute(builder: (context) {
+                      return const HistoryPage();
+                    }));
+                  },
                 ),
                 const SizedBox(
                   height: 10,
                 ),
                 ListTile(
-                  leading: IconButton(
-                    icon: const Icon(Icons.settings),
-                    onPressed: () {},
-                  ),
-                  title: const Text('Settings'),
+                  onTap: () {
+                    Navigator.push(context,
+                        MaterialPageRoute(builder: (context) {
+                      return ProfileUpdateScreen();
+                    }));
+                  },
+                  leading: Icon(Icons.settings),
+                  title: Text('Update profile info'),
                 ),
                 const SizedBox(height: 10),
                 ListTile(
-                  leading: IconButton(
-                    icon: const Icon(Icons.logout),
-                    onPressed: () {},
-                  ),
+                  leading: Icon(Icons.logout),
                   onTap: () {
                     FirebaseAuth.instance.signOut();
+                    Navigator.pushReplacement(context,
+                        MaterialPageRoute(builder: (context) {
+                      return LoginScreen();
+                    }));
                   },
                   title: Text('Logout'),
                 )

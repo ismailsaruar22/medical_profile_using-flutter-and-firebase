@@ -1,17 +1,25 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 
-import 'details_page.dart';
-
-class HistoryPage extends StatefulWidget {
-  const HistoryPage({Key? key}) : super(key: key);
+class DetailsPage extends StatefulWidget {
+  const DetailsPage({Key? key}) : super(key: key);
 
   @override
-  _HistoryPageState createState() => _HistoryPageState();
+  _DetailsPageState createState() => _DetailsPageState();
 }
 
-class _HistoryPageState extends State<HistoryPage> {
+class _DetailsPageState extends State<DetailsPage> {
   final ref = FirebaseFirestore.instance.collection('appointments');
+  String data = '';
+
+  void getData() async {
+    DocumentSnapshot snap =
+        await FirebaseFirestore.instance.collection('appointments').doc().get();
+    setState(() {
+      data = (snap.data() as Map<String, dynamic>)['content'];
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -32,23 +40,8 @@ class _HistoryPageState extends State<HistoryPage> {
             margin: EdgeInsets.all(20),
             child: ListView(
               children: snapshot.data!.docs.map((appointments) {
-                // return Container(
-                //   child: Center(child: Text(notes['content'])),
-                // );
-                return InkWell(
-                  onTap: () {
-                    Navigator.push(context,
-                        MaterialPageRoute(builder: (context) {
-                      return DetailsPage();
-                    }));
-                  },
-                  child: Card(
-                    elevation: 30,
-                    child: ListTile(
-                      title: Text(appointments.id),
-                      tileColor: Colors.blue.shade500,
-                    ),
-                  ),
+                return Container(
+                  child: Center(child: Text(data)),
                 );
               }).toList(),
             ),

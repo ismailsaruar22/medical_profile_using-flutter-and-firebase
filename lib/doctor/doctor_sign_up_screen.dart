@@ -1,81 +1,82 @@
-import 'package:flutter/cupertino.dart';
+import 'dart:typed_data';
+
 import 'package:flutter/material.dart';
-import 'package:flutter_svg/flutter_svg.dart';
-import 'package:medical_profile_v3/lab_admin/upload.dart';
+import 'package:flutter_svg/svg.dart';
+import 'package:image_picker/image_picker.dart';
 import 'package:medical_profile_v3/resources/auth_methods.dart';
+import 'package:medical_profile_v3/respnsiveness/mobile_screen_layout.dart';
+import 'package:medical_profile_v3/respnsiveness/responsive_layout_screen.dart';
+import 'package:medical_profile_v3/respnsiveness/websreen_layout.dart';
 import 'package:medical_profile_v3/screens/feed_screen.dart';
-import 'package:medical_profile_v3/screens/sign_up_screen.dart';
+import 'package:medical_profile_v3/screens/login_screen.dart';
 import 'package:medical_profile_v3/utills/color..dart';
 import 'package:medical_profile_v3/utills/utils.dart';
 import 'package:medical_profile_v3/widgets/textfield_input.dart';
 
-import '../doctor/doctor_login_page.dart';
-
-class LoginScreen extends StatefulWidget {
-  const LoginScreen({Key? key}) : super(key: key);
-
+class DoctorSignUpPage extends StatefulWidget {
   @override
-  _LoginScreenState createState() => _LoginScreenState();
+  _DoctorSignUpPageState createState() => _DoctorSignUpPageState();
 }
 
-class _LoginScreenState extends State<LoginScreen> {
+class _DoctorSignUpPageState extends State<DoctorSignUpPage> {
   final TextEditingController _emailController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
+  final TextEditingController _bioController = TextEditingController();
+  final TextEditingController _usernameController = TextEditingController();
+  Uint8List? _image;
   bool _isLoading = false;
+
   @override
   void dispose() {
     // TODO: implement dispose
     super.dispose();
     _emailController.dispose();
     _passwordController.dispose();
+    _bioController.dispose();
+    _usernameController.dispose();
   }
 
-  void loginUser() async {
+  void selectImage() async {
+    Uint8List im = await pickImage(ImageSource.gallery);
+    setState(() {
+      _image = im;
+    });
+  }
+
+  void signUpUser() async {
     setState(() {
       _isLoading = true;
     });
-    String res = await AuthMethods().loginUser(
+    String res = await AuthMethods().signUpUser(
       email: _emailController.text,
       password: _passwordController.text,
+      username: _usernameController.text,
+      bio: _bioController.text,
+      file: _image!,
     );
-    if (res == 'success') {
-      Navigator.pushReplacement(
-          context, MaterialPageRoute(builder: (context) => FeedScreen()));
-    } else {
-      showSnackBar(res, context);
-    }
     setState(() {
       _isLoading = false;
     });
+
+    if (res != "success") {
+      showSnackBar(res, context);
+    } else {
+      Navigator.pushReplacement(
+          context, MaterialPageRoute(builder: (context) => FeedScreen()));
+    }
   }
 
-  navigateToSignUp() {
+  navigateToSignIn() {
     Navigator.push(
-        context, MaterialPageRoute(builder: (context) => SignUpScreen()));
+        context, MaterialPageRoute(builder: (context) => const LoginScreen()));
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        actions: [
-          ElevatedButton(
-            onPressed: () {
-              Navigator.push(
-                context,
-                MaterialPageRoute(builder: (context) => const UploadPage()),
-              );
-            },
-            child: const Text(
-              'Upload report',
-              style:
-                  TextStyle(fontWeight: FontWeight.bold, color: Colors.black),
-            ),
-          ),
-        ],
-      ),
       body: SafeArea(
-        child: Container(
+        child: SingleChildScrollView(
+          child: Container(
             padding: const EdgeInsets.symmetric(
               horizontal: 32,
             ),
@@ -83,30 +84,62 @@ class _LoginScreenState extends State<LoginScreen> {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.center,
               children: [
-                Flexible(
-                  child: Container(),
-                  flex: 2,
-                ),
-                SvgPicture.asset(
-                  'assets/icons8-remind-app.svg',
-                  height: 100,
-                ),
+                // Flexible(
+                //   child: Container(),
+                //   flex: 2,
+                // ),
+                // SvgPicture.asset(
+                //   'assets/icons8-remind-app.svg',
+                //   height: 100,
+                // ),
                 const Text(
                   'Medical Profile',
                   style: TextStyle(
-                    fontSize: 40.0,
+                    fontSize: 44.0,
                     color: Colors.teal,
                     fontWeight: FontWeight.bold,
                   ),
                 ),
+                Stack(
+                  children: [
+                    _image != null
+                        ? CircleAvatar(
+                            radius: 64,
+                            backgroundImage: MemoryImage(_image!),
+                          )
+                        : const CircleAvatar(
+                            radius: 64,
+                            backgroundImage: NetworkImage(
+                              'https://thumbs.dreamstime.com/z/businessman-icon-image-male-avatar-profile-vector-glasses-beard-hairstyle-179728610.jpg',
+                            ),
+                          ),
+                    Positioned(
+                        bottom: -5,
+                        left: 80,
+                        child: IconButton(
+                          onPressed: selectImage,
+                          icon: const Icon(Icons.add_a_photo),
+                          color: Colors.teal,
+                        ))
+                  ],
+                ),
                 const SizedBox(
-                  height: 30.0,
+                  height: 20.0,
+                ),
+                TextfieldInput(
+                  textInputType: TextInputType.text,
+                  textEditingController: _usernameController,
+                  hintText: 'Enter Your username',
+                ),
+                const SizedBox(
+                  height: 20.0,
                 ),
                 TextfieldInput(
                   textInputType: TextInputType.emailAddress,
                   textEditingController: _emailController,
                   hintText: 'Enter Your email',
                 ),
+
                 const SizedBox(
                   height: 20.0,
                 ),
@@ -117,10 +150,18 @@ class _LoginScreenState extends State<LoginScreen> {
                   isPass: true,
                 ),
                 const SizedBox(
+                  height: 20.0,
+                ),
+                TextfieldInput(
+                  textInputType: TextInputType.text,
+                  textEditingController: _bioController,
+                  hintText: 'Enter your bio',
+                ),
+                const SizedBox(
                   height: 24.0,
                 ),
                 InkWell(
-                  onTap: loginUser,
+                  onTap: signUpUser,
                   child: Container(
                     child: _isLoading
                         ? const Center(
@@ -129,7 +170,7 @@ class _LoginScreenState extends State<LoginScreen> {
                             ),
                           )
                         : const Text(
-                            'Log In',
+                            'Sign up',
                           ),
                     width: double.infinity,
                     alignment: Alignment.center,
@@ -146,56 +187,24 @@ class _LoginScreenState extends State<LoginScreen> {
                 const SizedBox(
                   height: 12.0,
                 ),
-                Flexible(
-                  child: Container(),
-                  flex: 2,
-                ),
+                // Flexible(
+                //   child: Container(),
+                //   flex: 2,
+                // ),
                 Row(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
                     Container(
-                      child: const Text("Are you a doctor?"),
-                      padding: const EdgeInsets.symmetric(
-                        vertical: 8.0,
-                      ),
-                    ),
-                    const SizedBox(
-                      width: 10,
-                    ),
-                    ElevatedButton(
-                        style: ButtonStyle(
-                          padding: MaterialStateProperty.all(
-                              const EdgeInsets.all(5)),
-                          backgroundColor:
-                              MaterialStateProperty.all(Colors.teal),
-                        ),
-                        onPressed: () {
-                          Navigator.push(context,
-                              MaterialPageRoute(builder: (context) {
-                            return const DoctorLoginPage();
-                          }));
-                        },
-                        child: const Text(
-                          'Login as a doctor',
-                          style: TextStyle(color: Colors.black),
-                        )),
-                  ],
-                ),
-
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    Container(
-                      child: Text("dont you have an account?"),
+                      child: Text("Already have an account?"),
                       padding: const EdgeInsets.symmetric(
                         vertical: 8.0,
                       ),
                     ),
                     InkWell(
-                      onTap: navigateToSignUp,
+                      onTap: navigateToSignIn,
                       child: Container(
                         child: const Text(
-                          "Sign Up",
+                          "Sign In",
                           style: TextStyle(fontWeight: FontWeight.bold),
                         ),
                         padding: const EdgeInsets.symmetric(
@@ -210,7 +219,9 @@ class _LoginScreenState extends State<LoginScreen> {
                 )
                 //bla blal bal
               ],
-            )),
+            ),
+          ),
+        ),
       ),
     );
   }
