@@ -25,7 +25,7 @@ class _DetailsPageState extends State<DetailsPage> {
     return Scaffold(
       appBar: AppBar(
         backgroundColor: Colors.green,
-        title: Text('Prescription '),
+        title: const Text('Prescription '),
       ),
       body: StreamBuilder(
         stream: ref.snapshots(),
@@ -37,7 +37,7 @@ class _DetailsPageState extends State<DetailsPage> {
           }
 
           return Container(
-            margin: EdgeInsets.all(20),
+            margin: const EdgeInsets.all(20),
             child: ListView(
               children: snapshot.data!.docs.map((appointments) {
                 return Container(

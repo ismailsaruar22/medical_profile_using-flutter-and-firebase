@@ -1,12 +1,9 @@
 import 'package:file_picker/file_picker.dart';
-
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:medical_profile_v3/lab_admin/pdf_viewer.dart';
 import 'dart:io';
-import 'dart:typed_data';
 import 'package:path/path.dart';
-import 'package:flutter_pdfview/flutter_pdfview.dart';
 
 import '../resources/firebase_api.dart';
 import '../widgets/button_widgets.dart';
@@ -38,7 +35,7 @@ class _UploadPageState extends State<UploadPage> {
         actions: [
           ElevatedButton(
               onPressed: () async {
-                const url = 'files/user/vaccine certificate.pdf';
+                const url = 'files/vaccine certificate.pdf';
                 final file = await FirebaseApi.loadFirebase(url);
 
                 if (file == null) return;

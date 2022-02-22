@@ -41,8 +41,11 @@ class _LoginScreenState extends State<LoginScreen> {
     if (res == 'success') {
       Navigator.pushReplacement(
           context, MaterialPageRoute(builder: (context) => FeedScreen()));
+      setState(() {
+        _isLoading = false;
+      });
     } else {
-      showSnackBar(res, context);
+      showSnackBar('Please enter email and password correctly', context);
     }
     setState(() {
       _isLoading = false;

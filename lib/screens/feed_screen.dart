@@ -4,16 +4,18 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:medical_profile_v3/prescription/prescription_page.dart';
-import 'package:medical_profile_v3/profile_update_screen.dart';
+import 'package:medical_profile_v3/profile/profile_info.dart';
+import 'package:medical_profile_v3/profile/profile_update_screen.dart';
 import 'package:medical_profile_v3/qr/qr_share_page.dart';
 import 'package:medical_profile_v3/screens/login_screen.dart';
 import 'package:medical_profile_v3/utills/search_page.dart';
 
+import '../profile/profile.dart';
 import 'history_page.dart';
 import 'home_page.dart';
 
 class FeedScreen extends StatefulWidget {
-  static final String routeName = '/feed_screen';
+  static const String routeName = '/feed_screen';
 
   @override
   _FeedScreenState createState() => _FeedScreenState();
@@ -68,12 +70,12 @@ class _FeedScreenState extends State<FeedScreen> {
             actions: [
               ElevatedButton(
                   style: ButtonStyle(
-                    padding: MaterialStateProperty.all(EdgeInsets.all(5)),
+                    padding: MaterialStateProperty.all(const EdgeInsets.all(5)),
                   ),
                   onPressed: () {
                     Navigator.push(context,
                         MaterialPageRoute(builder: (context) {
-                      return PrescriptionPage();
+                      return const PrescriptionPage();
                     }));
                   },
                   child: const Text('write prescription'))
@@ -106,7 +108,7 @@ class _FeedScreenState extends State<FeedScreen> {
                   accountEmail: Container(
                       child: Text(
                     FirebaseAuth.instance.currentUser!.email.toString(),
-                    style: TextStyle(color: Colors.black),
+                    style: const TextStyle(color: Colors.black),
                   )),
                   currentAccountPicture: Stack(
                     children: [
@@ -159,23 +161,23 @@ class _FeedScreenState extends State<FeedScreen> {
                   onTap: () {
                     Navigator.push(context,
                         MaterialPageRoute(builder: (context) {
-                      return ProfileUpdateScreen();
+                      return Profile();
                     }));
                   },
-                  leading: Icon(Icons.settings),
-                  title: Text('Update profile info'),
+                  leading: const Icon(Icons.settings),
+                  title: const Text('Profile'),
                 ),
                 const SizedBox(height: 10),
                 ListTile(
-                  leading: Icon(Icons.logout),
+                  leading: const Icon(Icons.logout),
                   onTap: () {
                     FirebaseAuth.instance.signOut();
                     Navigator.pushReplacement(context,
                         MaterialPageRoute(builder: (context) {
-                      return LoginScreen();
+                      return const LoginScreen();
                     }));
                   },
-                  title: Text('Logout'),
+                  title: const Text('Logout'),
                 )
               ],
             ),

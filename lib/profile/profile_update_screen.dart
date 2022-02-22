@@ -1,3 +1,4 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 
 import 'package:select_form_field/select_form_field.dart';
@@ -9,6 +10,38 @@ class ProfileUpdateScreen extends StatefulWidget {
 
 class _ProfileUpdateScreenState extends State<ProfileUpdateScreen> {
   final _formKey = GlobalKey<FormState>();
+
+  final TextEditingController _emailController = TextEditingController();
+  final TextEditingController _firstNameController = TextEditingController();
+  final TextEditingController _lastNameController = TextEditingController();
+  final TextEditingController _phoneController = TextEditingController();
+  final TextEditingController _ageController = TextEditingController();
+  final TextEditingController _bloodGroupController = TextEditingController();
+  final TextEditingController _adressController = TextEditingController();
+  final TextEditingController genderController = TextEditingController();
+  final TextEditingController maritalStatusController = TextEditingController();
+
+  String? gender;
+  String? maritalStatus;
+  CollectionReference ref = FirebaseFirestore.instance
+      .collection('info')
+      .doc('user')
+      .collection('userInfo');
+
+  @override
+  void dispose() {
+    super.dispose();
+    _emailController.dispose();
+    _firstNameController.dispose();
+    _lastNameController.dispose();
+    _phoneController.dispose();
+    _adressController.dispose();
+    _ageController.dispose();
+    _bloodGroupController.dispose();
+    genderController.dispose();
+    maritalStatusController.dispose();
+  }
+
   String dropdownValue = 'Male';
   final List<Map<String, dynamic>> _gitems = [
     {
@@ -44,62 +77,77 @@ class _ProfileUpdateScreenState extends State<ProfileUpdateScreen> {
                   ),
                   const Center(child: Text('(Update your profile)')),
                   TextFormField(
+                    controller: _firstNameController,
                     decoration: const InputDecoration(
                         //icon: Icon(Icons.person),
                         hintText: 'Enter your first name',
                         labelText: 'First Name'),
                   ),
                   TextFormField(
+                    controller: _lastNameController,
                     decoration: const InputDecoration(
                         //icon: Icon(Icons.person),
                         hintText: 'Enter your last name',
                         labelText: 'Last Name'),
                   ),
                   TextFormField(
+                    controller: _phoneController,
                     decoration: const InputDecoration(
                         //icon: Icon(Icons.phone),
                         hintText: 'Enter a phone number',
                         labelText: 'Phone'),
                   ),
                   TextFormField(
+                    controller: _emailController,
                     decoration: const InputDecoration(
                         //icon: Icon(Icons.email),
                         hintText: 'Enter email adress',
                         labelText: 'Email(Optional)'),
                   ),
                   TextFormField(
+                    controller: _ageController,
                     decoration: const InputDecoration(
                         //icon: Icon(Icons.calendar_today),
                         hintText: 'Enter your age',
                         labelText: 'Age'),
                   ),
                   TextFormField(
+                    controller: _bloodGroupController,
                     decoration: const InputDecoration(
                         //icon: Icon(Icons.bloodtype),
                         hintText: 'Enter your blood group',
                         labelText: 'Blood group(Optional)'),
                   ),
                   TextFormField(
+                    controller: _adressController,
                     decoration: const InputDecoration(
                         //icon: Icon(Icons.location_on),
                         hintText: 'Enter your adress',
                         labelText: 'Adress'),
                   ),
                   SelectFormField(
+                    controller: genderController,
                     type: SelectFormFieldType.dropdown,
-                    initialValue: 'Male',
                     labelText: 'Gender',
                     items: _gitems,
-                    onChanged: (val) => print(val),
-                    onSaved: (val) => print(val),
+                    onChanged: (val) {
+                      gender = val;
+                    },
+                    onSaved: (val) {
+                      gender = val;
+                    },
                   ),
                   SelectFormField(
+                    controller: maritalStatusController,
                     type: SelectFormFieldType.dropdown,
-                    initialValue: 'Married',
                     labelText: 'Maritual status',
                     items: _mitems,
-                    onChanged: (val) => print(val),
-                    onSaved: (val) => print(val),
+                    onChanged: (val) {
+                      maritalStatus = val;
+                    },
+                    onSaved: (val) {
+                      maritalStatus = val;
+                    },
                   ),
                   Center(
                     child: Row(
@@ -111,11 +159,30 @@ class _ProfileUpdateScreenState extends State<ProfileUpdateScreen> {
                             style: ButtonStyle(
                                 backgroundColor: MaterialStateProperty.all(
                                     Colors.greenAccent)),
-                            child: Text(
+                            child: const Text(
                               'Submit',
                               style: TextStyle(color: Colors.black),
                             ),
-                            onPressed: () {},
+                            onPressed: () {
+                              ref.add({
+                                'fName': _firstNameController.text,
+                                'lName': _lastNameController.text,
+                                'phone': _phoneController.text,
+                                'email': _emailController.text,
+                                'age': _ageController.text,
+                                'bloodGroup': _bloodGroupController.text,
+                                'address': _adressController.text,
+                                'gender': genderController.text,
+                                'maritalStatus': maritalStatusController.text,
+                              });
+                              _firstNameController.clear();
+                              _lastNameController.clear();
+                              _phoneController.clear();
+                              _emailController.clear();
+                              _ageController.clear();
+                              _bloodGroupController.clear();
+                              _adressController.clear();
+                            },
                           ),
                         ),
                       ],

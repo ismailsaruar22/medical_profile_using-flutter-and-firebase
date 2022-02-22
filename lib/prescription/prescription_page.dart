@@ -10,7 +10,7 @@ import 'package:medical_profile_v3/prescription/details_page.dart';
 import 'package:medical_profile_v3/prescription/prescripton_data_from_firebase.dart';
 import 'package:medical_profile_v3/screens/login_screen.dart';
 
-import '../profile_update_screen.dart';
+import '../profile/profile_update_screen.dart';
 import '../qr/qr_share_page.dart';
 import '../screens/history_page.dart';
 
