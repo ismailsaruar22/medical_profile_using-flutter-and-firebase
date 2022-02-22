@@ -32,17 +32,17 @@ class _UploadPageState extends State<UploadPage> {
       appBar: AppBar(
         title: const Text('Upload files'),
         centerTitle: true,
-        actions: [
-          ElevatedButton(
-              onPressed: () async {
-                const url = 'files/vaccine certificate.pdf';
-                final file = await FirebaseApi.loadFirebase(url);
-
-                if (file == null) return;
-                openPDF(context, file);
-              },
-              child: Text('View pdf'))
-        ],
+        // actions: [
+        //   ElevatedButton(
+        //       onPressed: () async {
+        //         const url = 'files/vaccine certificate.pdf';
+        //         final file = await FirebaseApi.loadFirebase(url);
+        //
+        //         if (file == null) return;
+        //         openPDF(context, file);
+        //       },
+        //       child: Text('View pdf'))
+        // ],
       ),
       body: Container(
         padding: const EdgeInsets.all(32),

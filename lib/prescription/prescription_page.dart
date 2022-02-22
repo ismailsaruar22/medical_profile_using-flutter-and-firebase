@@ -10,6 +10,7 @@ import 'package:medical_profile_v3/prescription/details_page.dart';
 import 'package:medical_profile_v3/prescription/prescripton_data_from_firebase.dart';
 import 'package:medical_profile_v3/screens/login_screen.dart';
 
+import '../profile/profile.dart';
 import '../profile/profile_update_screen.dart';
 import '../qr/qr_share_page.dart';
 import '../screens/history_page.dart';
@@ -113,10 +114,10 @@ class _PrescriptionPageState extends State<PrescriptionPage> {
               ),
               ListTile(
                 leading: Icon(Icons.settings),
-                title: Text('Update profile info'),
+                title: Text('Profile'),
                 onTap: () {
                   Navigator.push(context, MaterialPageRoute(builder: (context) {
-                    return ProfileUpdateScreen();
+                    return Profile();
                   }));
                 },
               ),
