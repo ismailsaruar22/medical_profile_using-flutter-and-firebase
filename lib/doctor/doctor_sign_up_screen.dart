@@ -1,30 +1,31 @@
 import 'dart:typed_data';
 
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/svg.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:medical_profile_v3/doctor/docor_scan_page.dart';
 import 'package:medical_profile_v3/resources/auth_methods.dart';
-import 'package:firebase_database/firebase_database.dart';
-
+import 'package:medical_profile_v3/respnsiveness/mobile_screen_layout.dart';
+import 'package:medical_profile_v3/respnsiveness/responsive_layout_screen.dart';
+import 'package:medical_profile_v3/respnsiveness/websreen_layout.dart';
 import 'package:medical_profile_v3/screens/feed_screen.dart';
 import 'package:medical_profile_v3/screens/login_screen.dart';
 import 'package:medical_profile_v3/utills/color..dart';
 import 'package:medical_profile_v3/utills/utils.dart';
 import 'package:medical_profile_v3/widgets/textfield_input.dart';
 
-class SignUpScreen extends StatefulWidget {
+class DoctorSignUpPage extends StatefulWidget {
   @override
-  _SignUpScreenState createState() => _SignUpScreenState();
+  _DoctorSignUpPageState createState() => _DoctorSignUpPageState();
 }
 
-class _SignUpScreenState extends State<SignUpScreen> {
+class _DoctorSignUpPageState extends State<DoctorSignUpPage> {
   final TextEditingController _emailController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
   final TextEditingController _bioController = TextEditingController();
   final TextEditingController _usernameController = TextEditingController();
   Uint8List? _image;
   bool _isLoading = false;
-  String textrole = '';
 
   @override
   void dispose() {
@@ -47,14 +48,13 @@ class _SignUpScreenState extends State<SignUpScreen> {
     setState(() {
       _isLoading = true;
     });
-
     String res = await AuthMethods().signUpUser(
-        email: _emailController.text,
-        password: _passwordController.text,
-        username: _usernameController.text,
-        bio: _bioController.text,
-        file: _image!,
-        textrole: textrole);
+      email: _emailController.text,
+      password: _passwordController.text,
+      username: _usernameController.text,
+      bio: _bioController.text,
+      file: _image!,
+    );
     setState(() {
       _isLoading = false;
     });
@@ -63,7 +63,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
       showSnackBar(res, context);
     } else {
       Navigator.pushReplacement(
-          context, MaterialPageRoute(builder: (context) => FeedScreen()));
+          context, MaterialPageRoute(builder: (context) => const DoctorScanPage()));
     }
   }
 
@@ -75,9 +75,6 @@ class _SignUpScreenState extends State<SignUpScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        backgroundColor: Colors.teal.shade900,
-      ),
       body: SafeArea(
         child: SingleChildScrollView(
           child: Container(
@@ -103,7 +100,6 @@ class _SignUpScreenState extends State<SignUpScreen> {
                     color: Colors.teal,
                     fontWeight: FontWeight.bold,
                   ),
-                  textAlign: TextAlign.center,
                 ),
                 Stack(
                   children: [
@@ -134,7 +130,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                 TextfieldInput(
                   textInputType: TextInputType.text,
                   textEditingController: _usernameController,
-                  hintText: 'Enter Your Name',
+                  hintText: 'Enter Your username',
                 ),
                 const SizedBox(
                   height: 20.0,
@@ -157,30 +153,11 @@ class _SignUpScreenState extends State<SignUpScreen> {
                 const SizedBox(
                   height: 20.0,
                 ),
-                // TextfieldInput(
-                //   textInputType: TextInputType.text,
-                //   textEditingController: _bioController,
-                //   hintText: 'Enter your bio',
-                // ),
-                DropdownButtonFormField(
-                  decoration: const InputDecoration(
-                    labelText: 'Role',
-                  ),
-                  value: textrole.isNotEmpty ? textrole : null,
-                  items: <String>['Paitient', 'Doctor', 'Admin']
-                      .map<DropdownMenuItem<String>>((String value) {
-                    return DropdownMenuItem<String>(
-                      child: Text(value),
-                      value: value,
-                    );
-                  }).toList(),
-                  onChanged: (value) {
-                    setState(() {
-                      textrole = value.toString();
-                    });
-                  },
+                TextfieldInput(
+                  textInputType: TextInputType.text,
+                  textEditingController: _bioController,
+                  hintText: 'Enter your bio',
                 ),
-
                 const SizedBox(
                   height: 24.0,
                 ),

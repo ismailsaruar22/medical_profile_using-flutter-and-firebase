@@ -1,5 +1,6 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:medical_profile_v3/respnsiveness/mobile_screen_layout.dart';
 import 'package:medical_profile_v3/respnsiveness/responsive_layout_screen.dart';
@@ -11,7 +12,20 @@ import 'package:medical_profile_v3/utills/color..dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  await Firebase.initializeApp();
+
+  // initialise app based on platform- web or mobile
+  if (kIsWeb) {
+    await Firebase.initializeApp(
+      options: const FirebaseOptions(
+          apiKey: "AIzaSyATdFgFkEAXpIcMzAqUSahhUWmKcquIFF0",
+          appId: "1:819362576544:web:ee37718788643c371731c5",
+          messagingSenderId: "819362576544",
+          projectId: "medical-profile-v3",
+          storageBucket: 'medical-profile-v3.appspot.com'),
+    );
+  } else {
+    await Firebase.initializeApp();
+  }
   runApp(const MyApp());
 }
 
@@ -23,7 +37,6 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
-      title: 'Flutter Demo',
       theme: ThemeData(
         primarySwatch: Colors.blue,
       ),

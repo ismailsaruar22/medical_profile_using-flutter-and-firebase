@@ -7,14 +7,16 @@ import 'package:medical_profile_v3/widgets/prescription_card.dart';
 
 import '../lab_admin/pdf_viewer.dart';
 
-class HistoryPage extends StatefulWidget {
-  const HistoryPage({Key? key}) : super(key: key);
+class PaitientMedicalHistory extends StatefulWidget {
+  String paitientId;
+  PaitientMedicalHistory({Key? key, required this.paitientId})
+      : super(key: key);
 
   @override
-  _HistoryPageState createState() => _HistoryPageState();
+  _PaitientMedicalHistoryState createState() => _PaitientMedicalHistoryState();
 }
 
-class _HistoryPageState extends State<HistoryPage> {
+class _PaitientMedicalHistoryState extends State<PaitientMedicalHistory> {
   File? file;
   void openPDF(BuildContext context, File file) {
     Navigator.push(context, MaterialPageRoute(builder: (context) {
@@ -49,7 +51,7 @@ class _HistoryPageState extends State<HistoryPage> {
       body: StreamBuilder(
         stream: FirebaseFirestore.instance
             .collection('users data')
-            .doc(FirebaseAuth.instance.currentUser!.email.toString())
+            .doc(widget.paitientId.toString())
             .collection('appoinments')
             .snapshots(),
         builder: (context,

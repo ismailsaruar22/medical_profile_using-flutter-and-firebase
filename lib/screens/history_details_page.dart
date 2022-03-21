@@ -6,8 +6,12 @@ class HistoryDetailsPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Center(
-      child: Container(
-        child: Text('Medical Report'),
+      child: SafeArea(
+        child: Scaffold(
+          body: Container(
+            child: Text('Medical Report'),
+          ),
+        ),
       ),
     );
   }

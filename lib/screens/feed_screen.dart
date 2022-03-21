@@ -1,32 +1,57 @@
+import 'dart:typed_data';
+
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:medical_profile_v3/prescription/prescription_page.dart';
+import 'package:medical_profile_v3/profile/profile_update_screen.dart';
 import 'package:medical_profile_v3/qr/qr_share_page.dart';
+import 'package:medical_profile_v3/qr/test.dart';
+import 'package:medical_profile_v3/screens/ladning_page.dart';
 import 'package:medical_profile_v3/screens/login_screen.dart';
-import 'package:medical_profile_v3/utills/search_page.dart';
 
+import '../profile/profile.dart';
 import 'history_page.dart';
-import 'home_page.dart';
 
 class FeedScreen extends StatefulWidget {
-  static final String routeName = '/feed_screen';
+  static const String routeName = '/feed_screen';
 
   @override
   _FeedScreenState createState() => _FeedScreenState();
 }
 
 class _FeedScreenState extends State<FeedScreen> {
-  TabBar get _tabBar => const TabBar(
+  TabBar get _tabBar => TabBar(
         tabs: [
           Tab(
-            icon: Icon(Icons.home),
-            text: 'Home',
+            child: Container(
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: const [
+                  Icon(Icons.home),
+                  Text('Home'),
+                ],
+              ),
+            ),
           ),
           Tab(
-            icon: Icon(Icons.history),
-            text: 'History',
+            child: Container(
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: const [
+                  Icon(Icons.history),
+                  Text('History'),
+                ],
+              ),
+            ),
           ),
         ],
       );
+
+  TextEditingController prescriptionContent = TextEditingController();
+
+  CollectionReference ref = FirebaseFirestore.instance.collection('notes');
+  Uint8List? _image;
 
   @override
   Widget build(BuildContext context) {
@@ -55,19 +80,27 @@ class _FeedScreenState extends State<FeedScreen> {
               'Medical Profile',
               style: TextStyle(fontSize: 15),
             ),
+            // actions: [
+            //   ElevatedButton(
+            //       style: ButtonStyle(
+            //         padding: MaterialStateProperty.all(const EdgeInsets.all(5)),
+            //       ),
+            //       onPressed: () {
+            //         Navigator.push(context,
+            //             MaterialPageRoute(builder: (context) {
+            //           return const PrescriptionPage();
+            //           //return const QrTest();
+            //         }));
+            //       },
+            //       child: const Text('write prescription'))
+            // ],
             bottom: PreferredSize(
               preferredSize: _tabBar.preferredSize,
               child: ColoredBox(
-                color: Colors.blueGrey,
+                color: Colors.teal.shade900,
                 child: _tabBar,
               ),
             ),
-            // actions: [
-            //   IconButton(
-            //       onPressed: () => Navigator.of(context).push(
-            //           MaterialPageRoute(builder: (_) => const SearchPage())),
-            //       icon: Icon(Icons.search)),
-            // ],
           ),
           drawer: Drawer(
             child: ListView(
@@ -77,91 +110,97 @@ class _FeedScreenState extends State<FeedScreen> {
                   decoration: const BoxDecoration(color: Colors.white),
                   accountName: Container(
                       child: const Text(
-                    'Elizabeth Olsen',
+                    'Ismail Sarwar',
                     style: TextStyle(color: Colors.black),
                   )),
                   accountEmail: Container(
-                      child: const Text(
-                    'elizabetholsen@gmail.com',
-                    style: TextStyle(color: Colors.black),
+                      child: Text(
+                    FirebaseAuth.instance.currentUser!.email.toString(),
+                    style: const TextStyle(color: Colors.black),
                   )),
-                  currentAccountPicture: const CircleAvatar(
-                    backgroundImage: AssetImage('photos/ElizabethOlsen.jpg'),
+                  currentAccountPicture: Stack(
+                    children: [
+                      _image != null
+                          ? CircleAvatar(
+                              radius: 64,
+                              backgroundImage: MemoryImage(_image!),
+                            )
+                          : const CircleAvatar(
+                              radius: 64,
+                              backgroundImage: NetworkImage(
+                                'https://thumbs.dreamstime.com/z/businessman-icon-image-male-avatar-profile-vector-glasses-beard-hairstyle-179728610.jpg',
+                              ),
+                            ),
+                      Positioned(
+                          bottom: -5,
+                          left: 80,
+                          child: IconButton(
+                            icon: const Icon(Icons.add_a_photo),
+                            color: Colors.teal,
+                            onPressed: () {},
+                          ))
+                    ],
                   ),
-                ),
-                const SizedBox(
-                  height: 20,
-                ),
-                ListTile(
-                  leading: IconButton(
-                    icon: const Icon(Icons.dashboard),
-                    onPressed: () {},
-                  ),
-                  title: const Text('Dashboard'),
                 ),
                 const SizedBox(
                   height: 10,
                 ),
                 ListTile(
-                  leading: IconButton(
-                    icon: const Icon(Icons.notifications),
-                    onPressed: () {},
-                  ),
-                  title: const Text('Notifications'),
+                  onTap: () {
+                    Navigator.push(context,
+                        MaterialPageRoute(builder: (context) {
+                      return Profile();
+                    }));
+                  },
+                  leading: const Icon(Icons.person),
+                  title: const Text('Profile'),
                 ),
                 const SizedBox(
                   height: 10,
                 ),
                 ListTile(
-                  leading: IconButton(
-                    icon: const Icon(Icons.place),
-                    onPressed: () {},
-                  ),
-                  title: const Text('Branch'),
-                ),
-                const SizedBox(
-                  height: 10,
-                ),
-                ListTile(
-                  leading: IconButton(
-                    icon: const Icon(Icons.history),
-                    onPressed: () {
-                      Navigator.push(context,
-                          MaterialPageRoute(builder: (context) {
-                        return HistoryPage();
-                      }));
-                    },
-                  ),
+                  leading: const Icon(Icons.history),
                   title: const Text('History'),
+                  onTap: () {
+                    Navigator.push(context,
+                        MaterialPageRoute(builder: (context) {
+                      return const HistoryPage();
+                    }));
+                  },
                 ),
                 const SizedBox(
                   height: 10,
                 ),
                 ListTile(
-                  leading: IconButton(
-                    icon: const Icon(Icons.settings),
-                    onPressed: () {},
-                  ),
-                  title: const Text('Settings'),
+                  onTap: () {
+                    Navigator.push(context,
+                        MaterialPageRoute(builder: (context) {
+                      return ProfileUpdateScreen();
+                    }));
+                  },
+                  leading: const Icon(Icons.settings),
+                  title: const Text('Update personal info'),
                 ),
                 const SizedBox(height: 10),
                 ListTile(
-                  leading: IconButton(
-                    icon: const Icon(Icons.logout),
-                    onPressed: () {},
-                  ),
+                  leading: const Icon(Icons.logout),
                   onTap: () {
                     FirebaseAuth.instance.signOut();
+                    Navigator.pushReplacement(context,
+                        MaterialPageRoute(builder: (context) {
+                      return const LoginScreen();
+                    }));
                   },
-                  title: Text('Logout'),
+                  title: const Text('Logout'),
                 )
               ],
             ),
           ),
           body: const TabBarView(
             children: [
-              HomePage(),
+              LandingPage(),
               HistoryPage(),
+              //PrescriptionCard(),
             ],
           ),
         ),
