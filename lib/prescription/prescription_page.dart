@@ -3,6 +3,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/foundation.dart';
 
 import 'package:flutter/material.dart';
+import 'package:medical_profile_v3/utills/utils.dart';
 
 import 'package:uuid/uuid.dart';
 
@@ -64,6 +65,14 @@ class _PrescriptionPageState extends State<PrescriptionPage> {
                     'doctorUid': user,
                     'paitientUid': widget.paitientId.toString(),
                   });
+
+                  setState(() {
+                    showSnackBar('Submited', context);
+                  });
+
+                  medicineContent.clear();
+                  testsContent.clear();
+                  commentsContent.clear();
                 },
                 child: Text('Submit'))
           ],
