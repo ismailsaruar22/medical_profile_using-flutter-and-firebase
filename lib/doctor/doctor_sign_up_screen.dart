@@ -3,6 +3,7 @@ import 'dart:typed_data';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:medical_profile_v3/doctor/docor_scan_page.dart';
 import 'package:medical_profile_v3/resources/auth_methods.dart';
 import 'package:medical_profile_v3/respnsiveness/mobile_screen_layout.dart';
 import 'package:medical_profile_v3/respnsiveness/responsive_layout_screen.dart';
@@ -62,7 +63,7 @@ class _DoctorSignUpPageState extends State<DoctorSignUpPage> {
       showSnackBar(res, context);
     } else {
       Navigator.pushReplacement(
-          context, MaterialPageRoute(builder: (context) => FeedScreen()));
+          context, MaterialPageRoute(builder: (context) => const DoctorScanPage()));
     }
   }
 

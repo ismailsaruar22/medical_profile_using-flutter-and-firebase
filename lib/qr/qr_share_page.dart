@@ -1,11 +1,11 @@
-import 'package:barcode_scan2/gen/protos/protos.pb.dart';
-import 'package:barcode_scan2/model/android_options.dart';
-import 'package:barcode_scan2/model/scan_options.dart';
-import 'package:barcode_scan2/platform_wrapper.dart';
+import 'dart:async';
+import 'dart:io' show Platform;
+
+import 'package:barcode_scan2/barcode_scan2.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-
+import 'package:medical_profile_v3/screens/paitient_madical_history.dart';
 import 'package:qr_flutter/qr_flutter.dart';
 
 class QrSharePage extends StatefulWidget {
@@ -17,6 +17,7 @@ class QrSharePage extends StatefulWidget {
 
 class _QrSharePageState extends State<QrSharePage> {
   ScanResult? scanResult;
+  String? paitientId;
 
   final _flashOnController = TextEditingController(text: 'Flash on');
   final _flashOffController = TextEditingController(text: 'Flash off');
@@ -83,20 +84,28 @@ class _QrSharePageState extends State<QrSharePage> {
               ),
             ),
             QrImage(
-              data: FirebaseAuth.instance.currentUser!.uid.toString(),
+              data: FirebaseAuth.instance.currentUser!.email.toString(),
               size: 250,
-              embeddedImage: const AssetImage('images/logo.png'),
+              // embeddedImage: const AssetImage('images/logo.png'),
               embeddedImageStyle:
                   QrEmbeddedImageStyle(size: const Size(80, 80)),
             ),
             Text(
-                'User ID is:  ${FirebaseAuth.instance.currentUser!.uid.toString()}'),
+                'User ID is:  ${FirebaseAuth.instance.currentUser!.email.toString()}'),
             TextButton(
               style: ButtonStyle(
                 backgroundColor:
                     MaterialStateProperty.all<Color>(Colors.teal.shade900),
               ),
               onPressed: () {
+                // Navigator.push(
+                //   context,
+                //   MaterialPageRoute(
+                //     builder: (context) {
+                //       return const QrTest();
+                //     },
+                //   ),
+                // );
                 _scan();
               },
               child: const Text(
@@ -104,7 +113,34 @@ class _QrSharePageState extends State<QrSharePage> {
                 style: TextStyle(color: Colors.white),
               ),
             ),
-            Text('Scan Output: $scanResult.rawContent'),
+            ListView(
+              scrollDirection: Axis.vertical,
+              shrinkWrap: true,
+              children: <Widget>[
+                if (scanResult != null)
+                  Card(
+                    child: Column(
+                      children: <Widget>[
+                        ListTile(
+                          title:
+                              const Text('Click her to visit paitient profile'),
+                          subtitle: Text('ID: ' + scanResult.rawContent),
+                          onTap: () {
+                            Navigator.push(context,
+                                MaterialPageRoute(builder: (context) {
+                              return PaitientMedicalHistory(
+                                paitientId: scanResult.rawContent,
+                              );
+                            }));
+                          },
+                          tileColor: Colors.teal.shade900,
+                          textColor: Colors.white,
+                        ),
+                      ],
+                    ),
+                  )
+              ],
+            ),
           ],
         ),
       ),
@@ -113,7 +149,7 @@ class _QrSharePageState extends State<QrSharePage> {
 
   Future<void> _scan() async {
     try {
-      final result = await BarcodeScanner.scan(
+      var result = await BarcodeScanner.scan(
         options: ScanOptions(
           strings: {
             'cancel': _cancelController.text,
@@ -129,7 +165,7 @@ class _QrSharePageState extends State<QrSharePage> {
           ),
         ),
       );
-      setState(() => scanResult = result as ScanResult?);
+      setState(() => scanResult = result);
     } on PlatformException catch (e) {
       setState(() {
         scanResult = ScanResult(

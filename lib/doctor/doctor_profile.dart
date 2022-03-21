@@ -3,14 +3,14 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:medical_profile_v3/profile/profile_update_screen.dart';
 
-class Profile extends StatefulWidget {
+class DoctorProfile extends StatefulWidget {
   static const routeName = "/profile";
 
   @override
-  _ProfileState createState() => _ProfileState();
+  _DoctorProfileState createState() => _DoctorProfileState();
 }
 
-class _ProfileState extends State<Profile> {
+class _DoctorProfileState extends State<DoctorProfile> {
   bool _isLoading = false;
   var userData = {};
 
@@ -20,7 +20,7 @@ class _ProfileState extends State<Profile> {
     });
     try {
       var userSnap = await FirebaseFirestore.instance
-          .collection('Users')
+          .collection('Doctor')
           .doc(FirebaseAuth.instance.currentUser!.uid.toString())
           .get();
 
@@ -64,7 +64,8 @@ class _ProfileState extends State<Profile> {
                 const SizedBox(
                   height: 10,
                 ),
-                _profileName(userData['fName'].toString()),
+                _profileName(userData['fName'].toString() +
+                    userData['lName'].toString()),
                 const SizedBox(
                   height: 14,
                 ),
@@ -153,40 +154,44 @@ class _ProfileState extends State<Profile> {
               color: Colors.black87,
             ),
             ListTile(
-              leading: Icon(Icons.phone),
+              leading: const Icon(Icons.phone),
               title: Text(userData['phone'].toString()),
             ),
             const Divider(
               height: 0.6,
               color: Colors.black87,
             ),
+            // ListTile(
+            //   leading: Icon(Icons.bloodtype),
+            //   title: Text("Blood Group : B+"),
+            // ),
+            // Divider(
+            //   height: 0.6,
+            //   color: Colors.black87,
+            // ),
+            // ListTile(
+            //   leading: Icon(Icons.people_alt_outlined),
+            //   title: Text("Married"),
+            // ),
+            // Divider(
+            //   height: 0.6,
+            //   color: Colors.black87,
+            // ),
             ListTile(
-              leading: Icon(Icons.bloodtype),
-              title: Text(userData['bloodGroup'].toString()),
+              leading: const Icon(Icons.timelapse),
+              title: Text("Doctor ID:" + userData['doctor id'].toString()),
             ),
             const Divider(
               height: 0.6,
               color: Colors.black87,
             ),
             ListTile(
-              leading: Icon(Icons.people_alt_outlined),
-              title: Text(userData['maritalStatus'].toString()),
-            ),
-            const Divider(
-              height: 0.6,
-              color: Colors.black87,
+              leading: const Icon(Icons.location_on),
+              title: Text(userData['adress'].toString()),
             ),
             ListTile(
-              leading: Icon(Icons.timelapse),
-              title: Text(userData['age'].toString()),
-            ),
-            const Divider(
-              height: 0.6,
-              color: Colors.black87,
-            ),
-            ListTile(
-              leading: Icon(Icons.location_on),
-              title: Text(userData['address'].toString()),
+              leading: const Text('Speciality'),
+              title: Text(userData['speciality'].toString()),
             ),
           ],
         ),

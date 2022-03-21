@@ -4,12 +4,13 @@ import 'package:flutter/material.dart';
 
 import 'package:select_form_field/select_form_field.dart';
 
-class ProfileUpdateScreen extends StatefulWidget {
+class DoctorProfileUpdateScreen extends StatefulWidget {
   @override
-  _ProfileUpdateScreenState createState() => _ProfileUpdateScreenState();
+  _DoctorProfileUpdateScreenState createState() =>
+      _DoctorProfileUpdateScreenState();
 }
 
-class _ProfileUpdateScreenState extends State<ProfileUpdateScreen> {
+class _DoctorProfileUpdateScreenState extends State<DoctorProfileUpdateScreen> {
   final _formKey = GlobalKey<FormState>();
 
   final TextEditingController _emailController = TextEditingController();
@@ -19,13 +20,17 @@ class _ProfileUpdateScreenState extends State<ProfileUpdateScreen> {
   final TextEditingController _ageController = TextEditingController();
   final TextEditingController _bloodGroupController = TextEditingController();
   final TextEditingController _adressController = TextEditingController();
+  final TextEditingController genderController = TextEditingController();
+  final TextEditingController docIdController = TextEditingController();
+  final TextEditingController specialityController = TextEditingController();
 
   late String gender = '';
   late String maritalStatus = '';
+
   CollectionReference ref = FirebaseFirestore.instance
-      .collection('info')
-      .doc('user')
-      .collection('userInfo');
+      .collection('Doctor')
+      .doc(FirebaseAuth.instance.currentUser!.uid.toString())
+      .collection('info');
 
   @override
   void dispose() {
@@ -37,6 +42,9 @@ class _ProfileUpdateScreenState extends State<ProfileUpdateScreen> {
     _adressController.dispose();
     _ageController.dispose();
     _bloodGroupController.dispose();
+    genderController.dispose();
+    docIdController.dispose();
+    specialityController.dispose();
   }
 
   // String dropdownValue = 'Male';
@@ -120,7 +128,7 @@ class _ProfileUpdateScreenState extends State<ProfileUpdateScreen> {
                     decoration: const InputDecoration(
                         //icon: Icon(Icons.location_on),
                         hintText: 'Enter your adress',
-                        labelText: 'Adress'),
+                        labelText: 'Chamber Adress'),
                   ),
                   DropdownButtonFormField(
                     decoration: const InputDecoration(
@@ -140,23 +148,19 @@ class _ProfileUpdateScreenState extends State<ProfileUpdateScreen> {
                       });
                     },
                   ),
-                  DropdownButtonFormField(
+                  TextFormField(
+                    controller: docIdController,
                     decoration: const InputDecoration(
-                      labelText: 'Marital Status',
-                    ),
-                    value: maritalStatus.isNotEmpty ? maritalStatus : null,
-                    items: <String>['Paitient', 'Doctor', 'Admin']
-                        .map<DropdownMenuItem<String>>((String value) {
-                      return DropdownMenuItem<String>(
-                        child: Text(value),
-                        value: value,
-                      );
-                    }).toList(),
-                    onChanged: (value) {
-                      setState(() {
-                        maritalStatus = value.toString();
-                      });
-                    },
+                        //icon: Icon(Icons.location_on),
+                        hintText: 'Enter your official doctor id',
+                        labelText: 'Doctor ID'),
+                  ),
+                  TextFormField(
+                    controller: specialityController,
+                    decoration: const InputDecoration(
+                        //icon: Icon(Icons.location_on),
+                        hintText: 'Enter your speciality',
+                        labelText: 'Speciality'),
                   ),
                   Center(
                     child: Row(
@@ -174,7 +178,7 @@ class _ProfileUpdateScreenState extends State<ProfileUpdateScreen> {
                             ),
                             onPressed: () {
                               FirebaseFirestore.instance
-                                  .collection('Users')
+                                  .collection('Doctor')
                                   .doc(FirebaseAuth.instance.currentUser!.uid
                                       .toString())
                                   .set({
@@ -186,7 +190,8 @@ class _ProfileUpdateScreenState extends State<ProfileUpdateScreen> {
                                 'bloodGroup': _bloodGroupController.text,
                                 'address': _adressController.text,
                                 'gender': gender,
-                                'maritalStatus': maritalStatus,
+                                'doctor id': docIdController.text,
+                                'speciality': specialityController.text,
                               });
                               _firstNameController.clear();
                               _lastNameController.clear();
@@ -195,6 +200,8 @@ class _ProfileUpdateScreenState extends State<ProfileUpdateScreen> {
                               _ageController.clear();
                               _bloodGroupController.clear();
                               _adressController.clear();
+                              docIdController.clear();
+                              specialityController.clear();
                             },
                           ),
                         ),

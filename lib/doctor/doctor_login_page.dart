@@ -1,6 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:medical_profile_v3/doctor/docor_scan_page.dart';
 import 'package:medical_profile_v3/prescription/prescription_page.dart';
 import 'package:medical_profile_v3/resources/auth_methods.dart';
 import 'package:medical_profile_v3/screens/feed_screen.dart';
@@ -41,7 +42,7 @@ class _DoctorLoginPageState extends State<DoctorLoginPage> {
     );
     if (res == 'success') {
       Navigator.pushReplacement(
-          context, MaterialPageRoute(builder: (context) => PrescriptionPage()));
+          context, MaterialPageRoute(builder: (context) => const DoctorScanPage()));
     } else {
       showSnackBar(res, context);
     }

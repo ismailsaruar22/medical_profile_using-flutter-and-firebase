@@ -1,22 +1,17 @@
-import 'dart:typed_data';
-
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/foundation.dart';
 
 import 'package:flutter/material.dart';
-import 'package:medical_profile_v3/doctor/doctor_login_page.dart';
-import 'package:medical_profile_v3/prescription/details_page.dart';
-import 'package:medical_profile_v3/prescription/prescripton_data_from_firebase.dart';
-import 'package:medical_profile_v3/screens/login_screen.dart';
 
-import '../profile/profile.dart';
-import '../profile/profile_update_screen.dart';
+import 'package:uuid/uuid.dart';
+
 import '../qr/qr_share_page.dart';
-import '../screens/history_page.dart';
 
 class PrescriptionPage extends StatefulWidget {
-  const PrescriptionPage({Key? key}) : super(key: key);
+  String paitientId;
+
+  PrescriptionPage({Key? key, required this.paitientId}) : super(key: key);
 
   @override
   _PrescriptionPageState createState() => _PrescriptionPageState();
@@ -27,12 +22,16 @@ class _PrescriptionPageState extends State<PrescriptionPage> {
   TextEditingController testsContent = TextEditingController();
   TextEditingController commentsContent = TextEditingController();
 
-  CollectionReference ref =
-      FirebaseFirestore.instance.collection('appointments');
-  Uint8List? _image;
+  String user = FirebaseAuth.instance.currentUser!.uid;
+
+  // CollectionReference ref = FirebaseFirestore.instance
+  //     .collection('users data')
+  //     .doc(FirebaseAuth.instance.currentUser!.email.toString())
+  //     .collection('appoinments');
 
   @override
   Widget build(BuildContext context) {
+    print(user);
     return Scaffold(
         floatingActionButton: FloatingActionButton.extended(
           onPressed: () {
@@ -53,88 +52,21 @@ class _PrescriptionPageState extends State<PrescriptionPage> {
           actions: [
             ElevatedButton(
                 onPressed: () {
-                  ref.add({
+                  FirebaseFirestore.instance
+                      .collection('users data')
+                      .doc(widget.paitientId.toString())
+                      .collection('appoinments')
+                      .add({
                     'medicine': medicineContent.text,
                     'tests': testsContent.text,
                     'comments': commentsContent.text,
+                    'postId': const Uuid().v1(),
+                    'doctorUid': user,
+                    'paitientUid': widget.paitientId.toString(),
                   });
                 },
                 child: Text('Submit'))
           ],
-        ),
-        drawer: Drawer(
-          child: ListView(
-            padding: EdgeInsets.zero,
-            children: <Widget>[
-              UserAccountsDrawerHeader(
-                decoration: const BoxDecoration(color: Colors.white),
-                accountName: Container(
-                    child: const Text(
-                  'XYZ',
-                  style: TextStyle(color: Colors.black),
-                )),
-                accountEmail: Container(
-                    child: Text(
-                  FirebaseAuth.instance.currentUser!.email.toString(),
-                  style: TextStyle(color: Colors.black),
-                )),
-                currentAccountPicture: Stack(
-                  children: [
-                    _image != null
-                        ? CircleAvatar(
-                            radius: 64,
-                            backgroundImage: MemoryImage(_image!),
-                          )
-                        : const CircleAvatar(
-                            radius: 64,
-                            backgroundImage: NetworkImage(
-                              'https://thumbs.dreamstime.com/z/businessman-icon-image-male-avatar-profile-vector-glasses-beard-hairstyle-179728610.jpg',
-                            ),
-                          ),
-                    Positioned(
-                        bottom: -5,
-                        left: 80,
-                        child: IconButton(
-                          icon: const Icon(Icons.add_a_photo),
-                          color: Colors.teal,
-                          onPressed: () {},
-                        ))
-                  ],
-                ),
-              ),
-              const SizedBox(
-                height: 10,
-              ),
-              const ListTile(
-                leading: Icon(Icons.notifications),
-                title: Text('Notifications'),
-              ),
-              const SizedBox(
-                height: 10,
-              ),
-              ListTile(
-                leading: Icon(Icons.settings),
-                title: Text('Profile'),
-                onTap: () {
-                  Navigator.push(context, MaterialPageRoute(builder: (context) {
-                    return Profile();
-                  }));
-                },
-              ),
-              const SizedBox(height: 10),
-              ListTile(
-                leading: Icon(Icons.logout),
-                onTap: () {
-                  FirebaseAuth.instance.signOut();
-                  Navigator.pushReplacement(context,
-                      MaterialPageRoute(builder: (context) {
-                    return LoginScreen();
-                  }));
-                },
-                title: Text('Logout'),
-              )
-            ],
-          ),
         ),
         body: kIsWeb
             ? Container(

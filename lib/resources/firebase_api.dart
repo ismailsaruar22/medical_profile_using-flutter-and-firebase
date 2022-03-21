@@ -48,6 +48,12 @@ class FirebaseApi {
     }
   }
 
+  static Future<File?> loadNetwork(var url) async {
+    final response = await http.get(url);
+    final bytes = response.bodyBytes;
+    return _storeFile(url, bytes);
+  }
+
   static Future getData() async {
     var firestore = FirebaseFirestore.instance;
     QuerySnapshot qn = await firestore.collection('boys').get();

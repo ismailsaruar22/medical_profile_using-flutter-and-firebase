@@ -4,15 +4,14 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:medical_profile_v3/prescription/prescription_page.dart';
-import 'package:medical_profile_v3/profile/profile_info.dart';
 import 'package:medical_profile_v3/profile/profile_update_screen.dart';
 import 'package:medical_profile_v3/qr/qr_share_page.dart';
+import 'package:medical_profile_v3/qr/test.dart';
+import 'package:medical_profile_v3/screens/ladning_page.dart';
 import 'package:medical_profile_v3/screens/login_screen.dart';
-import 'package:medical_profile_v3/utills/search_page.dart';
 
 import '../profile/profile.dart';
 import 'history_page.dart';
-import 'home_page.dart';
 
 class FeedScreen extends StatefulWidget {
   static const String routeName = '/feed_screen';
@@ -22,15 +21,29 @@ class FeedScreen extends StatefulWidget {
 }
 
 class _FeedScreenState extends State<FeedScreen> {
-  TabBar get _tabBar => const TabBar(
+  TabBar get _tabBar => TabBar(
         tabs: [
           Tab(
-            icon: Icon(Icons.home),
-            text: 'Home',
+            child: Container(
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: const [
+                  Icon(Icons.home),
+                  Text('Home'),
+                ],
+              ),
+            ),
           ),
           Tab(
-            icon: Icon(Icons.history),
-            text: 'History',
+            child: Container(
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: const [
+                  Icon(Icons.history),
+                  Text('History'),
+                ],
+              ),
+            ),
           ),
         ],
       );
@@ -67,32 +80,27 @@ class _FeedScreenState extends State<FeedScreen> {
               'Medical Profile',
               style: TextStyle(fontSize: 15),
             ),
-            actions: [
-              ElevatedButton(
-                  style: ButtonStyle(
-                    padding: MaterialStateProperty.all(const EdgeInsets.all(5)),
-                  ),
-                  onPressed: () {
-                    Navigator.push(context,
-                        MaterialPageRoute(builder: (context) {
-                      return const PrescriptionPage();
-                    }));
-                  },
-                  child: const Text('write prescription'))
-            ],
+            // actions: [
+            //   ElevatedButton(
+            //       style: ButtonStyle(
+            //         padding: MaterialStateProperty.all(const EdgeInsets.all(5)),
+            //       ),
+            //       onPressed: () {
+            //         Navigator.push(context,
+            //             MaterialPageRoute(builder: (context) {
+            //           return const PrescriptionPage();
+            //           //return const QrTest();
+            //         }));
+            //       },
+            //       child: const Text('write prescription'))
+            // ],
             bottom: PreferredSize(
               preferredSize: _tabBar.preferredSize,
               child: ColoredBox(
-                color: Colors.blueGrey,
+                color: Colors.teal.shade900,
                 child: _tabBar,
               ),
             ),
-            // actions: [
-            //   IconButton(
-            //       onPressed: () => Navigator.of(context).push(
-            //           MaterialPageRoute(builder: (_) => const SearchPage())),
-            //       icon: Icon(Icons.search)),
-            // ],
           ),
           drawer: Drawer(
             child: ListView(
@@ -137,9 +145,15 @@ class _FeedScreenState extends State<FeedScreen> {
                 const SizedBox(
                   height: 10,
                 ),
-                const ListTile(
-                  leading: Icon(Icons.notifications),
-                  title: Text('Notifications'),
+                ListTile(
+                  onTap: () {
+                    Navigator.push(context,
+                        MaterialPageRoute(builder: (context) {
+                      return Profile();
+                    }));
+                  },
+                  leading: const Icon(Icons.person),
+                  title: const Text('Profile'),
                 ),
                 const SizedBox(
                   height: 10,
@@ -161,11 +175,11 @@ class _FeedScreenState extends State<FeedScreen> {
                   onTap: () {
                     Navigator.push(context,
                         MaterialPageRoute(builder: (context) {
-                      return Profile();
+                      return ProfileUpdateScreen();
                     }));
                   },
                   leading: const Icon(Icons.settings),
-                  title: const Text('Profile'),
+                  title: const Text('Update personal info'),
                 ),
                 const SizedBox(height: 10),
                 ListTile(
@@ -184,8 +198,9 @@ class _FeedScreenState extends State<FeedScreen> {
           ),
           body: const TabBarView(
             children: [
-              HomePage(),
+              LandingPage(),
               HistoryPage(),
+              //PrescriptionCard(),
             ],
           ),
         ),
