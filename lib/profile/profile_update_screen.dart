@@ -145,7 +145,7 @@ class _ProfileUpdateScreenState extends State<ProfileUpdateScreen> {
                       labelText: 'Marital Status',
                     ),
                     value: maritalStatus.isNotEmpty ? maritalStatus : null,
-                    items: <String>['Paitient', 'Doctor', 'Admin']
+                    items: <String>['Married', 'Unmarried']
                         .map<DropdownMenuItem<String>>((String value) {
                       return DropdownMenuItem<String>(
                         child: Text(value),
@@ -175,7 +175,7 @@ class _ProfileUpdateScreenState extends State<ProfileUpdateScreen> {
                             onPressed: () {
                               FirebaseFirestore.instance
                                   .collection('Users')
-                                  .doc(FirebaseAuth.instance.currentUser!.uid
+                                  .doc(FirebaseAuth.instance.currentUser!.email
                                       .toString())
                                   .set({
                                 'fName': _firstNameController.text,

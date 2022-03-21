@@ -40,8 +40,6 @@ class AuthMethods {
         await _firestore
             .collection('users data')
             .doc(cred.user!.email.toString())
-            .collection('profile info')
-            .doc()
             .set({
           'username': username,
           'uid': cred.user!.uid,

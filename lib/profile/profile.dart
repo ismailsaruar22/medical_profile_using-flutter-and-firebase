@@ -21,7 +21,7 @@ class _ProfileState extends State<Profile> {
     try {
       var userSnap = await FirebaseFirestore.instance
           .collection('Users')
-          .doc(FirebaseAuth.instance.currentUser!.uid.toString())
+          .doc(FirebaseAuth.instance.currentUser!.email.toString())
           .get();
 
       userData = userSnap.data()!;
@@ -47,17 +47,21 @@ class _ProfileState extends State<Profile> {
 
   @override
   Widget build(BuildContext context) {
-    return _isLoading
-        ? const Center(
-            child: CircularProgressIndicator(
-              color: Color.fromARGB(255, 28, 92, 30),
-              backgroundColor: Colors.grey,
-              strokeWidth: 10,
-            ),
-          )
-        : Scaffold(
-            body: SafeArea(
-                child: Column(
+    return Scaffold(
+      appBar: AppBar(
+        backgroundColor: Colors.teal.shade900,
+        title: const Text('Profile'),
+      ),
+      body: _isLoading
+          ? const Center(
+              child: CircularProgressIndicator(
+                color: Color.fromARGB(255, 28, 92, 30),
+                backgroundColor: Colors.grey,
+                strokeWidth: 10,
+              ),
+            )
+          : SafeArea(
+              child: Column(
               children: [
                 //for circle avtar image
                 _getHeader(),
@@ -84,7 +88,7 @@ class _ProfileState extends State<Profile> {
                 const Spacer(),
               ],
             )),
-          );
+    );
   }
 
   Widget _getHeader() {

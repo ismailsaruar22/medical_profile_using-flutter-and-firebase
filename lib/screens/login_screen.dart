@@ -97,21 +97,21 @@ class _LoginScreenState extends State<LoginScreen> {
     return Scaffold(
       appBar: AppBar(
         backgroundColor: Colors.teal.shade900,
-        actions: [
-          ElevatedButton(
-            onPressed: () {
-              Navigator.push(
-                context,
-                MaterialPageRoute(builder: (context) => const UploadPage()),
-              );
-            },
-            child: const Text(
-              'Upload report',
-              style:
-                  TextStyle(fontWeight: FontWeight.bold, color: Colors.black),
-            ),
-          ),
-        ],
+        // actions: [
+        //   // ElevatedButton(
+        //   //   onPressed: () {
+        //   //     Navigator.push(
+        //   //       context,
+        //   //       MaterialPageRoute(builder: (context) => const UploadPage()),
+        //   //     );
+        //   //   },
+        //   //   child: const Text(
+        //   //     'Upload report',
+        //   //     style:
+        //   //         TextStyle(fontWeight: FontWeight.bold, color: Colors.black),
+        //   //   ),
+        //   // ),
+        // ],
       ),
       body: SafeArea(
         child: Container(
@@ -159,27 +159,27 @@ class _LoginScreenState extends State<LoginScreen> {
               const SizedBox(
                 height: 20,
               ),
-              DropdownButtonFormField(
-                decoration: const InputDecoration(
-                  labelText: 'Role',
-                ),
-                value: textrole.isNotEmpty ? textrole : null,
-                items: <String>['Paitient', 'Doctor', 'Admin']
-                    .map<DropdownMenuItem<String>>((String value) {
-                  return DropdownMenuItem<String>(
-                    child: Text(value),
-                    value: value,
-                  );
-                }).toList(),
-                onChanged: (value) {
-                  setState(() {
-                    textrole = value.toString();
-                  });
-                },
-              ),
-              const SizedBox(
-                height: 24.0,
-              ),
+              // DropdownButtonFormField(
+              //   decoration: const InputDecoration(
+              //     labelText: 'Role',
+              //   ),
+              //   value: textrole.isNotEmpty ? textrole : null,
+              //   items: <String>['Paitient', 'Doctor', 'Admin']
+              //       .map<DropdownMenuItem<String>>((String value) {
+              //     return DropdownMenuItem<String>(
+              //       child: Text(value),
+              //       value: value,
+              //     );
+              //   }).toList(),
+              //   onChanged: (value) {
+              //     setState(() {
+              //       textrole = value.toString();
+              //     });
+              //   },
+              // ),
+              // const SizedBox(
+              //   height: 24.0,
+              // ),
               InkWell(
                 onTap: loginUser,
                 child: Container(
@@ -211,36 +211,36 @@ class _LoginScreenState extends State<LoginScreen> {
               //   child: Container(),
               //   flex: 2,
               // ),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  Container(
-                    child: const Text("Are you a doctor?"),
-                    padding: const EdgeInsets.symmetric(
-                      vertical: 8.0,
-                    ),
-                  ),
-                  const SizedBox(
-                    width: 10,
-                  ),
-                  ElevatedButton(
-                      style: ButtonStyle(
-                        padding:
-                            MaterialStateProperty.all(const EdgeInsets.all(5)),
-                        backgroundColor: MaterialStateProperty.all(Colors.teal),
-                      ),
-                      onPressed: () {
-                        Navigator.push(context,
-                            MaterialPageRoute(builder: (context) {
-                          return const DoctorLoginPage();
-                        }));
-                      },
-                      child: const Text(
-                        'Login as a doctor',
-                        style: TextStyle(color: Colors.black),
-                      )),
-                ],
-              ),
+              // Row(
+              //   mainAxisAlignment: MainAxisAlignment.center,
+              //   children: [
+              //     Container(
+              //       child: const Text("Are you a doctor?"),
+              //       padding: const EdgeInsets.symmetric(
+              //         vertical: 8.0,
+              //       ),
+              //     ),
+              //     const SizedBox(
+              //       width: 10,
+              //     ),
+              //     ElevatedButton(
+              //         style: ButtonStyle(
+              //           padding:
+              //               MaterialStateProperty.all(const EdgeInsets.all(5)),
+              //           backgroundColor: MaterialStateProperty.all(Colors.teal),
+              //         ),
+              //         onPressed: () {
+              //           Navigator.push(context,
+              //               MaterialPageRoute(builder: (context) {
+              //             return const DoctorLoginPage();
+              //           }));
+              //         },
+              //         child: const Text(
+              //           'Login as a doctor',
+              //           style: TextStyle(color: Colors.black),
+              //         )),
+              //   ],
+              // ),
 
               Row(
                 mainAxisAlignment: MainAxisAlignment.center,
