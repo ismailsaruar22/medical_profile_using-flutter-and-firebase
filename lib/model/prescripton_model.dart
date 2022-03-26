@@ -1,48 +1,44 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 
 class Post {
-  final String description;
-  final String uid;
-  final String username;
-  final likes;
+  final String tests;
+  final String paitienId;
+  final String comments;
+  final String medicine;
   final String postId;
   final DateTime datePublished;
-  final String postUrl;
-  final String profImage;
+  final String doctorId;
 
   const Post({
-    required this.description,
-    required this.uid,
-    required this.username,
-    required this.likes,
-    required this.postId,
+    required this.comments,
     required this.datePublished,
-    required this.postUrl,
-    required this.profImage,
+    required this.doctorId,
+    required this.medicine,
+    required this.paitienId,
+    required this.postId,
+    required this.tests,
   });
 
   static Post fromSnap(DocumentSnapshot snap) {
     var snapshot = snap.data() as Map<String, dynamic>;
 
     return Post(
-        description: snapshot["description"],
-        uid: snapshot["uid"],
-        likes: snapshot["likes"],
+        medicine: snapshot['medicine'],
+        comments: snapshot['comments'],
+        tests: snapshot['tests'],
+        paitienId: snapshot['paitientId'],
+        doctorId: snapshot['doctorId'],
         postId: snapshot["postId"],
-        datePublished: snapshot["datePublished"],
-        username: snapshot["username"],
-        postUrl: snapshot['postUrl'],
-        profImage: snapshot['profImage']);
+        datePublished: snapshot["datePublished"]);
   }
 
   Map<String, dynamic> toJson() => {
-        "description": description,
-        "uid": uid,
-        "likes": likes,
-        "username": username,
+        "medicine": medicine,
+        "comments": comments,
+        "tests": tests,
         "postId": postId,
         "datePublished": datePublished,
-        'postUrl': postUrl,
-        'profImage': profImage
+        "paitientId": paitienId,
+        "doctorId": doctorId
       };
 }

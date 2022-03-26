@@ -1,11 +1,8 @@
-import 'dart:io';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:medical_profile_v3/utills/color..dart';
 import 'package:medical_profile_v3/widgets/prescription_card.dart';
-
-import '../lab_admin/pdf_viewer.dart';
 
 class HistoryPage extends StatefulWidget {
   const HistoryPage({Key? key}) : super(key: key);
@@ -15,25 +12,10 @@ class HistoryPage extends StatefulWidget {
 }
 
 class _HistoryPageState extends State<HistoryPage> {
-  File? file;
-  void openPDF(BuildContext context, File file) {
-    Navigator.push(context, MaterialPageRoute(builder: (context) {
-      return PDFViewerPage(file: file);
-    }));
-  }
-
   final ref = FirebaseFirestore.instance.collection('appointments');
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        // appBar: AppBar(
-        //   backgroundColor: Colors.teal.shade700,
-        //   title: const Text(
-        //     'Prescriptions ',
-        //     textAlign: TextAlign.center,
-        //     style: TextStyle(color: primaryColor),
-        //   ),
-        // ),
         body: NestedScrollView(
       headerSliverBuilder: (BuildContext context, bool innerBoxIsScrolled) => [
         SliverAppBar(
@@ -51,6 +33,7 @@ class _HistoryPageState extends State<HistoryPage> {
             .collection('users data')
             .doc(FirebaseAuth.instance.currentUser!.email.toString())
             .collection('appoinments')
+            .orderBy('ts', descending: true)
             .snapshots(),
         builder: (context,
             AsyncSnapshot<QuerySnapshot<Map<String, dynamic>>> snapshot) {

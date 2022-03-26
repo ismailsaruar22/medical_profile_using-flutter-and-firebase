@@ -1,6 +1,4 @@
 import 'dart:async';
-import 'dart:io' show Platform;
-
 import 'package:barcode_scan2/barcode_scan2.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
@@ -23,11 +21,11 @@ class _QrSharePageState extends State<QrSharePage> {
   final _flashOffController = TextEditingController(text: 'Flash off');
   final _cancelController = TextEditingController(text: 'Cancel');
 
-  var _aspectTolerance = 0.00;
+  final _aspectTolerance = 0.00;
   var _numberOfCameras = 0;
-  var _selectedCamera = -1;
-  var _useAutoFocus = true;
-  var _autoEnableFlash = false;
+  final _selectedCamera = -1;
+  final _useAutoFocus = true;
+  final _autoEnableFlash = false;
 
   static final _possibleFormats = BarcodeFormat.values.toList()
     ..removeWhere((e) => e == BarcodeFormat.unknown);
@@ -98,14 +96,6 @@ class _QrSharePageState extends State<QrSharePage> {
                     MaterialStateProperty.all<Color>(Colors.teal.shade900),
               ),
               onPressed: () {
-                // Navigator.push(
-                //   context,
-                //   MaterialPageRoute(
-                //     builder: (context) {
-                //       return const QrTest();
-                //     },
-                //   ),
-                // );
                 _scan();
               },
               child: const Text(

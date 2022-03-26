@@ -1,20 +1,21 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/foundation.dart';
+
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:medical_profile_v3/utills/utils.dart';
 
-class PrescriptionPage extends StatefulWidget {
+class HomePageInstuction extends StatefulWidget {
   String paitientId;
 
-  PrescriptionPage({Key? key, required this.paitientId}) : super(key: key);
+  HomePageInstuction({Key? key, required this.paitientId}) : super(key: key);
 
   @override
-  _PrescriptionPageState createState() => _PrescriptionPageState();
+  _HomePageInstuctionState createState() => _HomePageInstuctionState();
 }
 
-class _PrescriptionPageState extends State<PrescriptionPage> {
+class _HomePageInstuctionState extends State<HomePageInstuction> {
   TextEditingController medicineContent = TextEditingController();
   TextEditingController testsContent = TextEditingController();
   TextEditingController commentsContent = TextEditingController();
@@ -46,7 +47,6 @@ class _PrescriptionPageState extends State<PrescriptionPage> {
 
   @override
   void initState() {
-    // TODO: implement initState
     super.initState();
     getData();
   }
@@ -57,23 +57,22 @@ class _PrescriptionPageState extends State<PrescriptionPage> {
     return Scaffold(
         appBar: AppBar(
           backgroundColor: Colors.teal.shade900,
-          title: const Text('Write Prescription'),
+          title: const Text('Write instruction to the patient'),
           actions: [
             ElevatedButton(
                 onPressed: () {
                   CollectionReference ref = FirebaseFirestore.instance
                       .collection('users data')
                       .doc(widget.paitientId.toString())
-                      .collection('appoinments');
+                      .collection('instructions');
 
                   String docId = ref.doc().id;
 
-                  ref.doc(docId).set({
-                    'medicine': medicineContent.text,
-                    'tests': testsContent.text,
-                    'comments': commentsContent.text,
-                    'postId': docId,
-                    'doctorUid': user,
+                  ref.doc(widget.paitientId.toString()).set({
+                    'diet': medicineContent.text,
+                    'workout': testsContent.text,
+                    'advise': commentsContent.text,
+                    'adminUid': user,
                     'paitientUid': widget.paitientId.toString(),
                     'ts': DateFormat.yMMMd().format(DateTime.now()),
                   });
@@ -121,7 +120,7 @@ class _PrescriptionPageState extends State<PrescriptionPage> {
                                   maxLines: null,
                                   expands: true,
                                   decoration: const InputDecoration(
-                                      hintText: 'Tests',
+                                      hintText: 'Advise ',
                                       hintStyle: TextStyle(
                                           fontWeight: FontWeight.bold),
                                       contentPadding: EdgeInsets.all(10)),
@@ -138,7 +137,7 @@ class _PrescriptionPageState extends State<PrescriptionPage> {
                                   maxLines: null,
                                   expands: true,
                                   decoration: const InputDecoration(
-                                      hintText: 'Medicines',
+                                      hintText: 'Workout Instruction',
                                       hintStyle: TextStyle(
                                           fontWeight: FontWeight.bold),
                                       contentPadding: EdgeInsets.all(10)),
@@ -155,7 +154,7 @@ class _PrescriptionPageState extends State<PrescriptionPage> {
                                   maxLines: null,
                                   expands: true,
                                   decoration: const InputDecoration(
-                                      hintText: 'Doctors comment',
+                                      hintText: 'Diet plan',
                                       hintStyle: TextStyle(
                                           fontWeight: FontWeight.bold),
                                       contentPadding: EdgeInsets.all(10)),
@@ -188,7 +187,7 @@ class _PrescriptionPageState extends State<PrescriptionPage> {
                                   maxLines: null,
                                   expands: true,
                                   decoration: const InputDecoration(
-                                      hintText: 'Tests',
+                                      hintText: 'Advise',
                                       hintStyle: TextStyle(
                                           fontWeight: FontWeight.bold),
                                       contentPadding: EdgeInsets.all(10)),
@@ -205,7 +204,7 @@ class _PrescriptionPageState extends State<PrescriptionPage> {
                                   maxLines: null,
                                   expands: true,
                                   decoration: const InputDecoration(
-                                      hintText: 'Medicines',
+                                      hintText: 'Workout instruction',
                                       hintStyle: TextStyle(
                                           fontWeight: FontWeight.bold),
                                       contentPadding: EdgeInsets.all(10)),
@@ -222,7 +221,7 @@ class _PrescriptionPageState extends State<PrescriptionPage> {
                                   maxLines: null,
                                   expands: true,
                                   decoration: const InputDecoration(
-                                      hintText: 'Doctors comment',
+                                      hintText: 'Diet plan',
                                       hintStyle: TextStyle(
                                           fontWeight: FontWeight.bold),
                                       contentPadding: EdgeInsets.all(10)),

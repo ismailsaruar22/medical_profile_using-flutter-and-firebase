@@ -2,8 +2,6 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 
-import 'package:select_form_field/select_form_field.dart';
-
 class ProfileUpdateScreen extends StatefulWidget {
   @override
   _ProfileUpdateScreenState createState() => _ProfileUpdateScreenState();
@@ -69,7 +67,7 @@ class _ProfileUpdateScreenState extends State<ProfileUpdateScreen> {
             child: Center(
               child: ListView(
                 children: [
-                  SizedBox(
+                  const SizedBox(
                     height: 20,
                   ),
                   const Center(child: Text('(Update your profile)')),
