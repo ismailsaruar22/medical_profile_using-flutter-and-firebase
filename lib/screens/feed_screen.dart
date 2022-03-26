@@ -4,11 +4,9 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:medical_profile_v3/doctor/docor_scan_page.dart';
-import 'package:medical_profile_v3/prescription/prescription_page.dart';
 import 'package:medical_profile_v3/profile/profile_update_screen.dart';
 import 'package:medical_profile_v3/qr/qr_share_page.dart';
-import 'package:medical_profile_v3/qr/test.dart';
-import 'package:medical_profile_v3/screens/ladning_page.dart';
+import 'package:medical_profile_v3/screens/homepage.dart';
 import 'package:medical_profile_v3/screens/login_screen.dart';
 
 import '../profile/profile.dart';
@@ -50,8 +48,6 @@ class _FeedScreenState extends State<FeedScreen> {
       );
 
   TextEditingController prescriptionContent = TextEditingController();
-
-  CollectionReference ref = FirebaseFirestore.instance.collection('notes');
   Uint8List? _image;
 
   bool _isLoading = false;
@@ -90,7 +86,7 @@ class _FeedScreenState extends State<FeedScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return userData['role'] == 'Paitient'
+    return userData['role'] == 'Patient'
         ? MaterialApp(
             debugShowCheckedModeBanner: false,
             home: DefaultTabController(
@@ -116,20 +112,6 @@ class _FeedScreenState extends State<FeedScreen> {
                     'Medical Profile',
                     style: TextStyle(fontSize: 15),
                   ),
-                  // actions: [
-                  //   ElevatedButton(
-                  //       style: ButtonStyle(
-                  //         padding: MaterialStateProperty.all(const EdgeInsets.all(5)),
-                  //       ),
-                  //       onPressed: () {
-                  //         Navigator.push(context,
-                  //             MaterialPageRoute(builder: (context) {
-                  //           return const PrescriptionPage();
-                  //           //return const QrTest();
-                  //         }));
-                  //       },
-                  //       child: const Text('write prescription'))
-                  // ],
                   bottom: PreferredSize(
                     preferredSize: _tabBar.preferredSize,
                     child: ColoredBox(
@@ -145,9 +127,9 @@ class _FeedScreenState extends State<FeedScreen> {
                       UserAccountsDrawerHeader(
                         decoration: const BoxDecoration(color: Colors.white),
                         accountName: Container(
-                            child: const Text(
-                          'Ismail Sarwar',
-                          style: TextStyle(color: Colors.black),
+                            child: Text(
+                          userData['username'].toString(),
+                          style: const TextStyle(color: Colors.black),
                         )),
                         accountEmail: Container(
                             child: Text(
@@ -161,11 +143,10 @@ class _FeedScreenState extends State<FeedScreen> {
                                     radius: 64,
                                     backgroundImage: MemoryImage(_image!),
                                   )
-                                : const CircleAvatar(
+                                : CircleAvatar(
                                     radius: 64,
-                                    backgroundImage: NetworkImage(
-                                      'https://thumbs.dreamstime.com/z/businessman-icon-image-male-avatar-profile-vector-glasses-beard-hairstyle-179728610.jpg',
-                                    ),
+                                    backgroundImage:
+                                        NetworkImage(userData['photoUrl']),
                                   ),
                             Positioned(
                                 bottom: -5,
@@ -234,14 +215,13 @@ class _FeedScreenState extends State<FeedScreen> {
                 ),
                 body: const TabBarView(
                   children: [
-                    LandingPage(),
+                    HomePage(),
                     HistoryPage(),
-                    //PrescriptionCard(),
                   ],
                 ),
               ),
             ),
           )
-        : DoctorScanPage();
+        : const DoctorScanPage();
   }
 }

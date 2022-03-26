@@ -1,11 +1,7 @@
-import 'dart:io';
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:medical_profile_v3/utills/color..dart';
 import 'package:medical_profile_v3/widgets/prescription_card.dart';
-
-import '../lab_admin/pdf_viewer.dart';
 
 class PaitientMedicalHistory extends StatefulWidget {
   String paitientId;
@@ -17,12 +13,12 @@ class PaitientMedicalHistory extends StatefulWidget {
 }
 
 class _PaitientMedicalHistoryState extends State<PaitientMedicalHistory> {
-  File? file;
-  void openPDF(BuildContext context, File file) {
-    Navigator.push(context, MaterialPageRoute(builder: (context) {
-      return PDFViewerPage(file: file);
-    }));
-  }
+  // File? file;
+  // void openPDF(BuildContext context, File file) {
+  //   Navigator.push(context, MaterialPageRoute(builder: (context) {
+  //     return PDFViewerPage(file: file);
+  //   }));
+  // }
 
   final ref = FirebaseFirestore.instance.collection('appointments');
   @override

@@ -1,10 +1,8 @@
 import 'dart:typed_data';
 
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:medical_profile_v3/resources/auth_methods.dart';
-import 'package:firebase_database/firebase_database.dart';
 
 import 'package:medical_profile_v3/screens/feed_screen.dart';
 import 'package:medical_profile_v3/screens/login_screen.dart';
@@ -88,14 +86,6 @@ class _SignUpScreenState extends State<SignUpScreen> {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.center,
               children: [
-                // Flexible(
-                //   child: Container(),
-                //   flex: 2,
-                // ),
-                // SvgPicture.asset(
-                //   'assets/icons8-remind-app.svg',
-                //   height: 100,
-                // ),
                 const Text(
                   'Medical Profile',
                   style: TextStyle(
@@ -157,17 +147,13 @@ class _SignUpScreenState extends State<SignUpScreen> {
                 const SizedBox(
                   height: 20.0,
                 ),
-                // TextfieldInput(
-                //   textInputType: TextInputType.text,
-                //   textEditingController: _bioController,
-                //   hintText: 'Enter your bio',
-                // ),
+
                 DropdownButtonFormField(
                   decoration: const InputDecoration(
                     labelText: 'Role',
                   ),
                   value: textrole.isNotEmpty ? textrole : null,
-                  items: <String>['Paitient', 'Doctor', 'Admin']
+                  items: <String>['Patient', 'Doctor', 'Admin']
                       .map<DropdownMenuItem<String>>((String value) {
                     return DropdownMenuItem<String>(
                       child: Text(value),
@@ -211,15 +197,12 @@ class _SignUpScreenState extends State<SignUpScreen> {
                 const SizedBox(
                   height: 12.0,
                 ),
-                // Flexible(
-                //   child: Container(),
-                //   flex: 2,
-                // ),
+
                 Row(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
                     Container(
-                      child: Text("Already have an account?"),
+                      child: const Text("Already have an account?"),
                       padding: const EdgeInsets.symmetric(
                         vertical: 8.0,
                       ),

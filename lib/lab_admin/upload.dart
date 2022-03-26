@@ -3,7 +3,6 @@ import 'package:file_picker/file_picker.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
-import 'package:medical_profile_v3/lab_admin/pdf_viewer.dart';
 import 'dart:io';
 import 'package:path/path.dart';
 
@@ -12,7 +11,9 @@ import '../screens/login_screen.dart';
 import '../widgets/button_widgets.dart';
 
 class UploadPage extends StatefulWidget {
-  const UploadPage({Key? key}) : super(key: key);
+  String paitientId;
+  String docId;
+  UploadPage({required this.docId, required this.paitientId});
 
   @override
   _UploadPageState createState() => _UploadPageState();
@@ -21,11 +22,6 @@ class UploadPage extends StatefulWidget {
 class _UploadPageState extends State<UploadPage> {
   UploadTask? task;
   File? file;
-  void openPDF(BuildContext context, File file) {
-    Navigator.push(context, MaterialPageRoute(builder: (context) {
-      return PDFViewerPage(file: file);
-    }));
-  }
 
   bool _isLoading = false;
   var userData = {};
@@ -65,142 +61,133 @@ class _UploadPageState extends State<UploadPage> {
   Widget build(BuildContext context) {
     final fileName = file != null ? basename(file!.path) : 'No File Selected';
 
-    return userData['role'] == 'Admin'
-        ? Scaffold(
-            appBar: AppBar(
-              backgroundColor: Colors.teal.shade900,
-              title: const Text('Upload files'),
-              centerTitle: true,
-              // actions: [
-              //   ElevatedButton(
-              //       onPressed: () async {
-              //         const url = 'files/vaccine certificate.pdf';
-              //         final file = await FirebaseApi.loadFirebase(url);
-              //
-              //         if (file == null) return;
-              //         openPDF(context, file);
-              //       },
-              //       child: Text('View pdf'))
-              // ],
+    return Scaffold(
+      appBar: AppBar(
+        backgroundColor: Colors.teal.shade900,
+        title: const Text('Upload files'),
+        centerTitle: true,
+        // actions: [
+        //   ElevatedButton(
+        //       onPressed: () async {
+        //         const url = 'files/vaccine certificate.pdf';
+        //         final file = await FirebaseApi.loadFirebase(url);
+        //
+        //         if (file == null) return;
+        //         openPDF(context, file);
+        //       },
+        //       child: Text('View pdf'))
+        // ],
+      ),
+      drawer: Drawer(
+        child: ListView(
+          padding: EdgeInsets.zero,
+          children: <Widget>[
+            UserAccountsDrawerHeader(
+              decoration: const BoxDecoration(color: Colors.white),
+              accountName: Container(
+                  child: Text(
+                userData['username'].toString(),
+                style: const TextStyle(color: Colors.black),
+              )),
+              accountEmail: Container(
+                  child: Text(
+                FirebaseAuth.instance.currentUser!.email.toString(),
+                style: const TextStyle(color: Colors.black),
+              )),
+              // currentAccountPicture: Stack(
+              //   children: [
+              //     _image != null
+              //         ? CircleAvatar(
+              //             radius: 64,
+              //             backgroundImage: MemoryImage(_image!),
+              //           )
+              //         : const CircleAvatar(
+              //             radius: 64,
+              //             backgroundImage: NetworkImage(
+              //               'https://thumbs.dreamstime.com/z/businessman-icon-image-male-avatar-profile-vector-glasses-beard-hairstyle-179728610.jpg',
+              //             ),
+              //           ),
+              //     Positioned(
+              //         bottom: -5,
+              //         left: 80,
+              //         child: IconButton(
+              //           icon: const Icon(Icons.add_a_photo),
+              //           color: Colors.teal,
+              //           onPressed: () {},
+              //         ))
+              //   ],
+              // ),
             ),
-            drawer: Drawer(
-              child: ListView(
-                padding: EdgeInsets.zero,
-                children: <Widget>[
-                  UserAccountsDrawerHeader(
-                    decoration: const BoxDecoration(color: Colors.white),
-                    accountName: Container(
-                        child: const Text(
-                      'XYZ',
-                      style: TextStyle(color: Colors.black),
-                    )),
-                    accountEmail: Container(
-                        child: Text(
-                      FirebaseAuth.instance.currentUser!.email.toString(),
-                      style: TextStyle(color: Colors.black),
-                    )),
-                    // currentAccountPicture: Stack(
-                    //   children: [
-                    //     _image != null
-                    //         ? CircleAvatar(
-                    //             radius: 64,
-                    //             backgroundImage: MemoryImage(_image!),
-                    //           )
-                    //         : const CircleAvatar(
-                    //             radius: 64,
-                    //             backgroundImage: NetworkImage(
-                    //               'https://thumbs.dreamstime.com/z/businessman-icon-image-male-avatar-profile-vector-glasses-beard-hairstyle-179728610.jpg',
-                    //             ),
-                    //           ),
-                    //     Positioned(
-                    //         bottom: -5,
-                    //         left: 80,
-                    //         child: IconButton(
-                    //           icon: const Icon(Icons.add_a_photo),
-                    //           color: Colors.teal,
-                    //           onPressed: () {},
-                    //         ))
-                    //   ],
-                    // ),
-                  ),
-                  const SizedBox(
-                    height: 10,
-                  ),
-                  // ListTile(
-                  //   leading: const Icon(Icons.person),
-                  //   title: const Text('Profile'),
-                  //   onTap: () {
-                  //     Navigator.push(context,
-                  //         MaterialPageRoute(builder: (context) {
-                  //       return DoctorProfile();
-                  //     }));
-                  //   },
-                  // ),
-                  // ListTile(
-                  //   leading: const Icon(Icons.settings),
-                  //   title: const Text('Update profile info'),
-                  //   onTap: () {
-                  //     Navigator.push(context,
-                  //         MaterialPageRoute(builder: (context) {
-                  //       return DoctorProfileUpdateScreen();
-                  //     }));
-                  //   },
-                  // ),
-                  const SizedBox(height: 10),
-                  ListTile(
-                    leading: Icon(Icons.logout),
-                    onTap: () {
-                      FirebaseAuth.instance.signOut();
-                      Navigator.pushReplacement(context,
-                          MaterialPageRoute(builder: (context) {
-                        return LoginScreen();
-                      }));
-                    },
-                    title: Text('Logout'),
-                  )
-                ],
+            const SizedBox(
+              height: 10,
+            ),
+            // ListTile(
+            //   leading: const Icon(Icons.person),
+            //   title: const Text('Profile'),
+            //   onTap: () {
+            //     Navigator.push(context,
+            //         MaterialPageRoute(builder: (context) {
+            //       return DoctorProfile();
+            //     }));
+            //   },
+            // ),
+            // ListTile(
+            //   leading: const Icon(Icons.settings),
+            //   title: const Text('Update profile info'),
+            //   onTap: () {
+            //     Navigator.push(context,
+            //         MaterialPageRoute(builder: (context) {
+            //       return DoctorProfileUpdateScreen();
+            //     }));
+            //   },
+            // ),
+            const SizedBox(height: 10),
+            ListTile(
+              leading: const Icon(Icons.logout),
+              onTap: () {
+                FirebaseAuth.instance.signOut();
+                Navigator.pushReplacement(context,
+                    MaterialPageRoute(builder: (context) {
+                  return const LoginScreen();
+                }));
+              },
+              title: const Text('Logout'),
+            )
+          ],
+        ),
+      ),
+      body: Container(
+        padding: const EdgeInsets.all(32),
+        child: Center(
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              ButtonWidget(
+                text: 'Select File',
+                icon: Icons.attach_file,
+                onClicked: selectFile,
               ),
-            ),
-            body: Container(
-              padding: const EdgeInsets.all(32),
-              child: Center(
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    ButtonWidget(
-                      text: 'Select File',
-                      icon: Icons.attach_file,
-                      onClicked: selectFile,
-                    ),
-                    const SizedBox(height: 8),
-                    Text(
-                      fileName,
-                      style: const TextStyle(
-                        fontSize: 16,
-                        fontWeight: FontWeight.w500,
-                      ),
-                    ),
-                    const SizedBox(height: 48),
-                    ButtonWidget(
-                      text: 'Upload File',
-                      icon: Icons.cloud_upload_outlined,
-                      onClicked: uploadFile,
-                    ),
-                    const SizedBox(height: 20),
-                    task != null ? buildUploadStatus(task!) : Container(),
-                  ],
+              const SizedBox(height: 8),
+              Text(
+                fileName,
+                style: const TextStyle(
+                  fontSize: 16,
+                  fontWeight: FontWeight.w500,
                 ),
               ),
-            ),
-          )
-        : const Scaffold(
-            body: Center(
-              child: CircularProgressIndicator(
-                backgroundColor: Colors.grey,
-                color: Colors.green,
+              const SizedBox(height: 48),
+              ButtonWidget(
+                text: 'Upload File',
+                icon: Icons.cloud_upload_outlined,
+                onClicked: uploadFile,
               ),
-            ),
-          );
+              const SizedBox(height: 20),
+              task != null ? buildUploadStatus(task!) : Container(),
+            ],
+          ),
+        ),
+      ),
+    );
   }
 
   Future selectFile() async {
@@ -228,7 +215,14 @@ class _UploadPageState extends State<UploadPage> {
     final snapshot = await task!.whenComplete(() {});
     final urlDownload = await snapshot.ref.getDownloadURL();
 
-    print('Download-Link: $urlDownload');
+    FirebaseFirestore.instance
+        .collection('users data')
+        .doc(widget.paitientId)
+        .collection('appoinments')
+        .doc(widget.docId)
+        .update({
+      'reportUrl': urlDownload,
+    });
   }
 
   Widget buildUploadStatus(UploadTask task) => StreamBuilder<TaskSnapshot>(

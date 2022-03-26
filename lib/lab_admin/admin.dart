@@ -7,23 +7,23 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:medical_profile_v3/doctor/doctor_profile.dart';
 import 'package:medical_profile_v3/doctor/doctor_profile_update.dart';
+import 'package:medical_profile_v3/lab_admin/home_page_instruction.dart';
 import 'package:medical_profile_v3/lab_admin/upload.dart';
 
 import 'package:medical_profile_v3/prescription/prescription_page.dart';
 import 'package:medical_profile_v3/screens/paitient_madical_history.dart';
 import 'dart:typed_data';
-import '../lab_admin/admin.dart';
 import '../profile/profile.dart';
 import '../screens/login_screen.dart';
 
-class DoctorScanPage extends StatefulWidget {
-  const DoctorScanPage({Key? key}) : super(key: key);
+class AdminPage extends StatefulWidget {
+  const AdminPage({Key? key}) : super(key: key);
 
   @override
-  State<DoctorScanPage> createState() => _DoctorScanPageState();
+  State<AdminPage> createState() => _AdminPageState();
 }
 
-class _DoctorScanPageState extends State<DoctorScanPage> {
+class _AdminPageState extends State<AdminPage> {
   ScanResult? scanResult;
   String? paitientId;
 
@@ -31,11 +31,11 @@ class _DoctorScanPageState extends State<DoctorScanPage> {
   final _flashOffController = TextEditingController(text: 'Flash off');
   final _cancelController = TextEditingController(text: 'Cancel');
 
-  var _aspectTolerance = 0.00;
+  final _aspectTolerance = 0.00;
   var _numberOfCameras = 0;
-  var _selectedCamera = -1;
-  var _useAutoFocus = true;
-  var _autoEnableFlash = false;
+  final _selectedCamera = -1;
+  final _useAutoFocus = true;
+  final _autoEnableFlash = false;
 
   static final _possibleFormats = BarcodeFormat.values.toList()
     ..removeWhere((e) => e == BarcodeFormat.unknown);
@@ -84,11 +84,11 @@ class _DoctorScanPageState extends State<DoctorScanPage> {
   @override
   Widget build(BuildContext context) {
     final scanResult = this.scanResult;
-    return userData['role'] == 'Doctor'
+    return userData['role'] == 'Admin'
         ? Scaffold(
             appBar: AppBar(
               backgroundColor: Colors.teal.shade900,
-              title: Text('Meidcal Profile'),
+              title: const Text('Meidcal Profile'),
             ),
             drawer: Drawer(
               child: ListView(
@@ -97,14 +97,14 @@ class _DoctorScanPageState extends State<DoctorScanPage> {
                   UserAccountsDrawerHeader(
                     decoration: const BoxDecoration(color: Colors.white),
                     accountName: Container(
-                        child: const Text(
-                      'XYZ',
-                      style: TextStyle(color: Colors.black),
+                        child: Text(
+                      userData['username'].toString(),
+                      style: const TextStyle(color: Colors.black),
                     )),
                     accountEmail: Container(
                         child: Text(
                       FirebaseAuth.instance.currentUser!.email.toString(),
-                      style: TextStyle(color: Colors.black),
+                      style: const TextStyle(color: Colors.black),
                     )),
                     currentAccountPicture: Stack(
                       children: [
@@ -130,40 +130,17 @@ class _DoctorScanPageState extends State<DoctorScanPage> {
                       ],
                     ),
                   ),
-                  const SizedBox(
-                    height: 10,
-                  ),
-                  ListTile(
-                    leading: const Icon(Icons.person),
-                    title: const Text('Profile'),
-                    onTap: () {
-                      Navigator.push(context,
-                          MaterialPageRoute(builder: (context) {
-                        return DoctorProfile();
-                      }));
-                    },
-                  ),
-                  ListTile(
-                    leading: const Icon(Icons.settings),
-                    title: const Text('Update profile info'),
-                    onTap: () {
-                      Navigator.push(context,
-                          MaterialPageRoute(builder: (context) {
-                        return DoctorProfileUpdateScreen();
-                      }));
-                    },
-                  ),
                   const SizedBox(height: 10),
                   ListTile(
-                    leading: Icon(Icons.logout),
+                    leading: const Icon(Icons.logout),
                     onTap: () {
                       FirebaseAuth.instance.signOut();
                       Navigator.pushReplacement(context,
                           MaterialPageRoute(builder: (context) {
-                        return LoginScreen();
+                        return const LoginScreen();
                       }));
                     },
-                    title: Text('Logout'),
+                    title: const Text('Logout'),
                   )
                 ],
               ),
@@ -196,38 +173,12 @@ class _DoctorScanPageState extends State<DoctorScanPage> {
                   crossAxisAlignment: CrossAxisAlignment.center,
                   mainAxisAlignment: MainAxisAlignment.spaceAround,
                   children: [
-                    // Text(
-                    //   'Share your profile throgh this QR code',
-                    //   textAlign: TextAlign.center,
-                    //   style: TextStyle(
-                    //     fontSize: 17.0,
-                    //     fontWeight: FontWeight.bold,
-                    //     color: Colors.teal.shade900,
-                    //   ),
-                    // ),
-                    // QrImage(
-                    //   data: FirebaseAuth.instance.currentUser!.email.toString(),
-                    //   size: 250,
-                    //   // embeddedImage: const AssetImage('images/logo.png'),
-                    //   embeddedImageStyle:
-                    //       QrEmbeddedImageStyle(size: const Size(80, 80)),
-                    // ),
-                    // Text(
-                    //     'User ID is:  ${FirebaseAuth.instance.currentUser!.email.toString()}'),
                     TextButton(
                       style: ButtonStyle(
                         backgroundColor: MaterialStateProperty.all<Color>(
                             Colors.teal.shade900),
                       ),
                       onPressed: () {
-                        // Navigator.push(
-                        //   context,
-                        //   MaterialPageRoute(
-                        //     builder: (context) {
-                        //       return const QrTest();
-                        //     },
-                        //   ),
-                        // );
                         _scan();
                       },
                       child: const Text(
@@ -268,7 +219,7 @@ class _DoctorScanPageState extends State<DoctorScanPage> {
                                 ),
                                 ListTile(
                                   title: const Text(
-                                    'Write prescription to this user',
+                                    'Upload instruction',
                                     style:
                                         TextStyle(fontWeight: FontWeight.bold),
                                   ),
@@ -277,7 +228,7 @@ class _DoctorScanPageState extends State<DoctorScanPage> {
                                   onTap: () {
                                     Navigator.push(context,
                                         MaterialPageRoute(builder: (context) {
-                                      return PrescriptionPage(
+                                      return HomePageInstuction(
                                         paitientId: scanResult.rawContent,
                                       );
                                     }));
@@ -295,7 +246,14 @@ class _DoctorScanPageState extends State<DoctorScanPage> {
                 ),
               ),
             ))
-        : const AdminPage();
+        : const Scaffold(
+            body: Center(
+              child: CircularProgressIndicator(
+                backgroundColor: Colors.grey,
+                color: Colors.green,
+              ),
+            ),
+          );
   }
 
   Future<void> _scan() async {

@@ -13,6 +13,7 @@ class Profile extends StatefulWidget {
 class _ProfileState extends State<Profile> {
   bool _isLoading = false;
   var userData = {};
+  var userPersonalData = {};
 
   getData() async {
     setState(() {
@@ -25,6 +26,13 @@ class _ProfileState extends State<Profile> {
           .get();
 
       userData = userSnap.data()!;
+
+      var userDataSnap = await FirebaseFirestore.instance
+          .collection('users data')
+          .doc(FirebaseAuth.instance.currentUser!.email.toString())
+          .get();
+
+      userPersonalData = userDataSnap.data()!;
 
       // get post lENGTH
 
@@ -100,13 +108,12 @@ class _ProfileState extends State<Profile> {
           child: Container(
             height: 100,
             width: 100,
-            decoration: const BoxDecoration(
+            decoration: BoxDecoration(
                 //borderRadius: BorderRadius.all(Radius.circular(10.0)),
                 shape: BoxShape.circle,
                 image: DecorationImage(
                     fit: BoxFit.fill,
-                    image: NetworkImage(
-                        "https://images.unsplash.com/photo-1494790108377-be9c29b29330?ixid=MXwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHw%3D&ixlib=rb-1.2.1&auto=format&fit=crop&w=334&q=80"))
+                    image: NetworkImage(userPersonalData['photoUrl']))
                 // color: Colors.orange[100],
                 ),
           ),
@@ -117,7 +124,7 @@ class _ProfileState extends State<Profile> {
 
   Widget _profileName(String name) {
     return SingleChildScrollView(
-      child: Container(
+      child: SizedBox(
         width: MediaQuery.of(context).size.width * 0.80, //80% of width,
         child: Center(
           child: Text(
@@ -131,7 +138,7 @@ class _ProfileState extends State<Profile> {
   }
 
   Widget _heading(String heading) {
-    return Container(
+    return SizedBox(
       width: MediaQuery.of(context).size.width * 0.80, //80% of width,
       child: Text(
         heading,
@@ -149,7 +156,7 @@ class _ProfileState extends State<Profile> {
           children: [
             //row for each deatails
             ListTile(
-              leading: Icon(Icons.email),
+              leading: const Icon(Icons.email),
               title: Text(userData['email'].toString()),
             ),
             const Divider(
@@ -157,7 +164,7 @@ class _ProfileState extends State<Profile> {
               color: Colors.black87,
             ),
             ListTile(
-              leading: Icon(Icons.phone),
+              leading: const Icon(Icons.phone),
               title: Text(userData['phone'].toString()),
             ),
             const Divider(
@@ -165,7 +172,7 @@ class _ProfileState extends State<Profile> {
               color: Colors.black87,
             ),
             ListTile(
-              leading: Icon(Icons.bloodtype),
+              leading: const Icon(Icons.bloodtype),
               title: Text(userData['bloodGroup'].toString()),
             ),
             const Divider(
@@ -173,7 +180,7 @@ class _ProfileState extends State<Profile> {
               color: Colors.black87,
             ),
             ListTile(
-              leading: Icon(Icons.people_alt_outlined),
+              leading: const Icon(Icons.people_alt_outlined),
               title: Text(userData['maritalStatus'].toString()),
             ),
             const Divider(
@@ -181,7 +188,7 @@ class _ProfileState extends State<Profile> {
               color: Colors.black87,
             ),
             ListTile(
-              leading: Icon(Icons.timelapse),
+              leading: const Icon(Icons.timelapse),
               title: Text(userData['age'].toString()),
             ),
             const Divider(
@@ -189,7 +196,7 @@ class _ProfileState extends State<Profile> {
               color: Colors.black87,
             ),
             ListTile(
-              leading: Icon(Icons.location_on),
+              leading: const Icon(Icons.location_on),
               title: Text(userData['address'].toString()),
             ),
           ],

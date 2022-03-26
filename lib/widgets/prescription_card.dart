@@ -3,10 +3,9 @@ import 'dart:io';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:medical_profile_v3/lab_admin/pdf_view.dart';
+import 'package:medical_profile_v3/lab_admin/upload.dart';
 import 'package:medical_profile_v3/utills/color..dart';
-
-import '../lab_admin/pdf_viewer.dart';
-import '../resources/firebase_api.dart';
 
 class PrescriptionCard extends StatefulWidget {
   final snap;
@@ -24,11 +23,18 @@ class _PrescriptionCardState extends State<PrescriptionCard> {
   bool _isLoading = false;
   var userData = {};
   var paitientData = {};
+  var roleData = {};
+  var urlData = {};
 
-  void openPDF(BuildContext context, File file) {
-    Navigator.push(context, MaterialPageRoute(builder: (context) {
-      return PDFViewerPage(file: file);
-    }));
+  getInfo() async {
+    var photoUrlSnap = await FirebaseFirestore.instance
+        .collection('Doctor')
+        .doc(widget.snap['paitientUid'])
+        .collection('appoinments')
+        .doc(widget.snap['postId'])
+        .get();
+
+    urlData = photoUrlSnap.data()!;
   }
 
   getData() async {
@@ -43,13 +49,19 @@ class _PrescriptionCardState extends State<PrescriptionCard> {
 
       userData = userSnap.data()!;
 
-      // get post lENGTH
       var paitientSnap = await FirebaseFirestore.instance
           .collection('Users')
           .doc(widget.snap['paitientUid'].toString())
           .get();
 
       paitientData = paitientSnap.data()!;
+
+      var userRoleSnap = await FirebaseFirestore.instance
+          .collection('users data')
+          .doc(FirebaseAuth.instance.currentUser!.email.toString())
+          .get();
+
+      roleData = userRoleSnap.data()!;
       setState(() {
         _isLoading = false;
       });
@@ -62,7 +74,6 @@ class _PrescriptionCardState extends State<PrescriptionCard> {
 
   @override
   void initState() {
-    // TODO: implement initState
     super.initState();
     getData();
   }
@@ -76,8 +87,8 @@ class _PrescriptionCardState extends State<PrescriptionCard> {
           border: Border.all(
             color: Colors.black38,
           ),
-          borderRadius: BorderRadius.all(Radius.circular(20)),
-          color: Color.fromARGB(255, 224, 231, 233),
+          borderRadius: const BorderRadius.all(Radius.circular(20)),
+          color: const Color.fromARGB(255, 224, 231, 233),
         ),
         child: Padding(
           padding: const EdgeInsets.all(8.0),
@@ -89,14 +100,14 @@ class _PrescriptionCardState extends State<PrescriptionCard> {
                 height: 20,
                 width: double.infinity,
                 color: Colors.grey[500],
-                child: const Text(
-                  'Date: ',
-                  style: TextStyle(
+                child: Text(
+                  'Date: ${widget.snap['ts']}',
+                  style: const TextStyle(
                       color: Colors.black, fontWeight: FontWeight.w600),
                 ),
               ),
               Container(
-                height: 200,
+                height: 220,
                 width: double.infinity,
                 color: Colors.grey[400],
                 child: Row(
@@ -108,6 +119,7 @@ class _PrescriptionCardState extends State<PrescriptionCard> {
                           mainAxisAlignment: MainAxisAlignment.start,
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
+                            Text('Prescription ID: ${widget.snap['postId']}'),
                             const Text(
                               'Doctor ',
                               style: TextStyle(
@@ -140,14 +152,14 @@ class _PrescriptionCardState extends State<PrescriptionCard> {
                               height: 20,
                             ),
                             const Text(
-                              "Paitient ",
+                              "Patient ",
                               style: TextStyle(
                                   fontWeight: FontWeight.bold,
                                   fontSize: 20,
                                   color: Colors.black),
                             ),
                             Text(
-                              "Name: ${paitientData['lName'].toString()} ",
+                              "Name: ${paitientData['fName'].toString()} ${paitientData['lName'].toString()} ",
                               style: const TextStyle(
                                   fontWeight: FontWeight.w500,
                                   fontSize: 16,
@@ -161,7 +173,7 @@ class _PrescriptionCardState extends State<PrescriptionCard> {
                                   color: Colors.black),
                             ),
                             Text(
-                              "Sex:  ${paitientData['gender'].toString()} ",
+                              "Gender:  ${paitientData['gender'].toString()} ",
                               style: const TextStyle(
                                   fontWeight: FontWeight.w700,
                                   fontSize: 16,
@@ -171,18 +183,6 @@ class _PrescriptionCardState extends State<PrescriptionCard> {
                         ),
                       ),
                     ),
-                    // Expanded(
-                    //   child: Padding(
-                    //     padding: const EdgeInsets.all(8.0),
-                    //     child: Column(
-                    //       mainAxisAlignment: MainAxisAlignment.start,
-                    //       crossAxisAlignment: CrossAxisAlignment.start,
-                    //       children: const <Widget>[
-
-                    //       ],
-                    //     ),
-                    //   ),
-                    // )
                   ],
                 ),
               ),
@@ -208,7 +208,7 @@ class _PrescriptionCardState extends State<PrescriptionCard> {
                   fontWeight: FontWeight.bold,
                 ),
               ),
-              Text(widget.snap['tests'].toString()),
+              Text(widget.snap['medicine'].toString()),
               const Divider(
                 color: Colors.black,
               ),
@@ -218,65 +218,72 @@ class _PrescriptionCardState extends State<PrescriptionCard> {
                   fontWeight: FontWeight.bold,
                 ),
               ),
-              Text(widget.snap['tests'].toString()),
+              Text(widget.snap['comments'].toString()),
               const Divider(
                 color: Colors.black,
               ),
-              TextButton(
-                onPressed: () async {
-                  setState(() {
-                    _isLoading = true;
-                  });
-                  const url = 'files/vaccine certificate.pdf';
-                  const directUrl =
-                      'https://firebasestorage.googleapis.com/v0/b/medical-profile-v3.appspot.com/o/files%2Fuser%2FName_Age_Correction_Manual_Applicant.pdf?alt=media&token=9a2353fe-4224-40b7-aac4-1af8b9af60e3';
+              roleData['role'] == 'Admin'
+                  ? TextButton(
+                      onPressed: () {
+                        setState(() {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) {
+                                return UploadPage(
+                                  docId: widget.snap['postId'].toString(),
+                                  paitientId:
+                                      widget.snap['paitientUid'].toString(),
+                                );
+                              },
+                            ),
+                          );
+                        });
+                      },
+                      child: const Text('Upload Report'))
+                  : TextButton(
+                      onPressed: () async {
+                        setState(() {
+                          _isLoading = true;
+                        });
 
-                  final file = await FirebaseApi.loadFirebase(url);
+                        Navigator.push(context,
+                            MaterialPageRoute(builder: (context) {
+                          return Pdf(url: widget.snap['reportUrl'].toString());
+                        }));
 
-                  if (file == null) return;
-                  openPDF(context, file);
-                  setState(() {
-                    _isLoading = false;
-                  });
-                },
-                child: Container(
-                  decoration: BoxDecoration(
-                    color: Colors.teal.shade700,
-                    border: Border.all(
-                      color: Colors.white,
-                      width: 3,
-                    ),
-                    borderRadius: BorderRadius.circular(5),
-                  ),
-                  alignment: Alignment.center,
-                  child: _isLoading
-                      ? const Center(
-                          child: CircularProgressIndicator(
-                            color: primaryColor,
-                            backgroundColor: Colors.grey,
-                          ),
-                        )
-                      : const Text(
-                          "Reports",
-                          style: TextStyle(
+                        setState(() {
+                          _isLoading = false;
+                        });
+                      },
+                      child: Container(
+                        decoration: BoxDecoration(
+                          color: Colors.teal.shade700,
+                          border: Border.all(
                             color: Colors.white,
-                            fontWeight: FontWeight.bold,
+                            width: 3,
                           ),
+                          borderRadius: BorderRadius.circular(5),
                         ),
-                  width: 80,
-                  height: 40,
-                ),
-              ),
-              // ElevatedButton(
-              //   onPressed: () async {
-              //     const url = 'files/vaccine certificate.pdf';
-              //     final file = await FirebaseApi.loadFirebase(url);
-
-              //     if (file == null) return;
-              //     openPDF(context, file);
-              //   },
-              //   child: Text('Reports'),
-              // ),
+                        alignment: Alignment.center,
+                        child: _isLoading
+                            ? const Center(
+                                child: CircularProgressIndicator(
+                                  color: primaryColor,
+                                  backgroundColor: Colors.grey,
+                                ),
+                              )
+                            : const Text(
+                                "Reports",
+                                style: TextStyle(
+                                  color: Colors.white,
+                                  fontWeight: FontWeight.bold,
+                                ),
+                              ),
+                        width: 80,
+                        height: 40,
+                      ),
+                    ),
             ],
           ),
         ),

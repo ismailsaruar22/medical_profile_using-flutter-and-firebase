@@ -1,5 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:medical_profile_v3/profile/profile_update_screen.dart';
 
@@ -13,6 +14,7 @@ class DoctorProfile extends StatefulWidget {
 class _DoctorProfileState extends State<DoctorProfile> {
   bool _isLoading = false;
   var userData = {};
+  var userPersonalData = {};
 
   getData() async {
     setState(() {
@@ -25,6 +27,13 @@ class _DoctorProfileState extends State<DoctorProfile> {
           .get();
 
       userData = userSnap.data()!;
+
+      var userDataSnap = await FirebaseFirestore.instance
+          .collection('users data')
+          .doc(FirebaseAuth.instance.currentUser!.email.toString())
+          .get();
+
+      userPersonalData = userDataSnap.data()!;
 
       // get post lENGTH
 
@@ -47,45 +56,48 @@ class _DoctorProfileState extends State<DoctorProfile> {
 
   @override
   Widget build(BuildContext context) {
-    return _isLoading
-        ? const Center(
-            child: CircularProgressIndicator(
-              color: Color.fromARGB(255, 28, 92, 30),
-              backgroundColor: Colors.grey,
-              strokeWidth: 10,
+    return Scaffold(
+      appBar: AppBar(
+        backgroundColor: Colors.teal,
+        title: const Text('Profile'),
+      ),
+      body: _isLoading
+          ? Center(
+              child: CircularProgressIndicator(
+                color: Colors.teal.shade900,
+              ),
+            )
+          : SafeArea(
+              child: Column(
+                children: [
+                  //for circle avtar image
+                  _getHeader(),
+                  const SizedBox(
+                    height: 10,
+                  ),
+                  _profileName(userData['fName'].toString() +
+                      userData['lName'].toString()),
+                  const SizedBox(
+                    height: 14,
+                  ),
+                  _heading("Personal Details"),
+                  const SizedBox(
+                    height: 6,
+                  ),
+                  _detailsCard(),
+                  const SizedBox(
+                    height: 10,
+                  ),
+                  _heading("Settings"),
+                  const SizedBox(
+                    height: 6,
+                  ),
+                  _settingsCard(),
+                  const Spacer(),
+                ],
+              ),
             ),
-          )
-        : Scaffold(
-            body: SafeArea(
-                child: Column(
-              children: [
-                //for circle avtar image
-                _getHeader(),
-                const SizedBox(
-                  height: 10,
-                ),
-                _profileName(userData['fName'].toString() +
-                    userData['lName'].toString()),
-                const SizedBox(
-                  height: 14,
-                ),
-                _heading("Personal Details"),
-                const SizedBox(
-                  height: 6,
-                ),
-                _detailsCard(),
-                const SizedBox(
-                  height: 10,
-                ),
-                _heading("Settings"),
-                const SizedBox(
-                  height: 6,
-                ),
-                _settingsCard(),
-                const Spacer(),
-              ],
-            )),
-          );
+    );
   }
 
   Widget _getHeader() {
@@ -97,13 +109,13 @@ class _DoctorProfileState extends State<DoctorProfile> {
           child: Container(
             height: 100,
             width: 100,
-            decoration: const BoxDecoration(
+            decoration: BoxDecoration(
                 //borderRadius: BorderRadius.all(Radius.circular(10.0)),
                 shape: BoxShape.circle,
                 image: DecorationImage(
                     fit: BoxFit.fill,
-                    image: NetworkImage(
-                        "https://images.unsplash.com/photo-1494790108377-be9c29b29330?ixid=MXwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHw%3D&ixlib=rb-1.2.1&auto=format&fit=crop&w=334&q=80"))
+                    image:
+                        NetworkImage(userPersonalData['photoUrl'].toString()))
                 // color: Colors.orange[100],
                 ),
           ),
