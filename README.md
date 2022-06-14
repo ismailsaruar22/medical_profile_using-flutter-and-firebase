@@ -6,7 +6,7 @@ My linkedin : https://www.linkedin.com/in/md-ismail-mia-42b011235
 
 This project was my final year graduation project.So the idea of this project was creating an app where we can store our medical history and creating  a place where a doctor can write prescriptoin digitally to his patients .
 
-There is total 3 role in this app. 
+There are total 3 role in this app. 
 1. Doctor
 
 2. Patient,
@@ -14,7 +14,7 @@ There is total 3 role in this app.
 3. Admin
 
 Doctor pannel :
-So using this app a doctor can write prescription to his paitients.To write prescription a doctor must first have to scan users unique qr code.By scanning qr code doctor can see this specific users past medical history and write new prescription as well.When doctor will write new prescriptin the prescription will automatic be added to the patient medical history.
+So using this app a doctor can write prescription to his paitients.To write prescription a doctor must first have to scan users unique qr code.By scanning qr code doctor can see that specific user past medical history and write new prescription as well.When doctor will write new prescriptin, the prescription will automaticly be added to the patient medical history.
 
 ![photo1648050509](https://user-images.githubusercontent.com/73167399/160254558-ef106549-f21d-4d3a-affd-0ccb738c7a5f.jpeg)
 
